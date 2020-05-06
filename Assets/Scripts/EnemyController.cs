@@ -1,22 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class EnemyController : MonoBehaviour
 {
-    public List<Vector2> wayPoints;
+    //public List<Vector2> wayPoints;
+    public Tilemap ground;
+    public GameObject target;
     public float speed;
 
     private Vector2 currentPosition;
     private float progress = 0f;
-    private int currentPoint = 0;
+    private int currentPoint;
     private Vector2 direction;
+    private List<Vector2> wayPoints;
 
 
     void Start()
     {
+        //Debug.Log(ground.WorldToCell(transform.position));
+        //Debug.Log(ground.CellToWorld(transform.position));
+        transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
         //Debug.Log(mylist);
+        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(target.transform.position);
+        if (wayPoints.Count != 0)
+        {
+            currentPoint = wayPoints.Count - 1;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
     }
 
     void Update()
@@ -38,14 +55,14 @@ public class EnemyController : MonoBehaviour
         }
         else
         {
-            if((wayPoints.Count - 1) == currentPoint)
+            if(currentPoint == 0)
             {
                 Destroy(gameObject);
                 return;
             }
             progress = 0f;
             currentPosition = wayPoints[currentPoint];
-            currentPoint++;
+            currentPoint--;
             ChangeRotation();
         }
         

@@ -8,21 +8,14 @@ public class PathFinder : MonoBehaviour
     public List<Node> CheckedNodes = new List<Node>();
     public List<Node> FreeNodes = new List<Node>();
     List<Node> WaitingNodes = new List<Node>();
-    public GameObject Target;
+    //public GameObject Target;
     public LayerMask SolidLayer;
-
-    int qqq = 0;
 
     private void Start()
     {
-        //Debug.Log(GetPath(Target.transform.position).Count);
-        //foreach(Vector2 i in GetPath(Target.transform.position))
-        //{
-        //    Debug.Log(i);
-        //}
+
     }
 
-    // Update is called once per frame
     void Update()
     {
         //PathToTarget = GetPath(Target.transform.position);
@@ -44,13 +37,10 @@ public class PathFinder : MonoBehaviour
         WaitingNodes.AddRange(GetNeighbourNodes(startNode));
         while(WaitingNodes.Count > 0)
         {
-            qqq++;
-            Debug.Log(qqq);
             Node nodeToCheck = WaitingNodes.Where(x => x.F == WaitingNodes.Min(y => y.F)).FirstOrDefault();
 
             if (nodeToCheck.Position == TargetPosition)
             {
-                Debug.Log("CalculatePathFromNode");
                 return CalculatePathFromNode(nodeToCheck);
             }
 
@@ -111,20 +101,20 @@ public class PathFinder : MonoBehaviour
         return Neighbours;
     }
 
-    void OnDrawGizmos()
-    {
-        foreach (var item in CheckedNodes)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(new Vector2(item.Position.x, item.Position.y), 0.1f);
-        }
-        if (PathToTarget != null)
-        foreach (var item in PathToTarget)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(new Vector2(item.x, item.y), 0.2f);
-        }
-    }
+    //void OnDrawGizmos()
+    //{
+    //    foreach (var item in CheckedNodes)
+    //    {
+    //        Gizmos.color = Color.yellow;
+    //        Gizmos.DrawSphere(new Vector2(item.Position.x, item.Position.y), 0.1f);
+    //    }
+    //    if (PathToTarget != null)
+    //    foreach (var item in PathToTarget)
+    //    {
+    //        Gizmos.color = Color.red;
+    //        Gizmos.DrawSphere(new Vector2(item.x, item.y), 0.2f);
+    //    }
+    //}
 
 }
 
