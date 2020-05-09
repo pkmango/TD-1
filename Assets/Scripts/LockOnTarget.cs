@@ -7,36 +7,37 @@ public class LockOnTarget : MonoBehaviour
 {
     public float turnSpeed;
     public float updateTime = 0.02f;
+    public Transform currentTarget;
+    public float accuracy = 7f; // Точность наведения (0 = абсолютная)
+    public bool targetDetected; // Цель обнаружена?
+    public bool targetLocked; // Цель захвачена?
 
     private Vector3 direction;
     //private Transform enemy;
     private Quaternion rotation;
     private List<Transform> enemies =  new List<Transform>();
-    private bool targetLocked; // Цель захвачена?
+    
     private Quaternion defoultRotation;
 
     void Start()
     {
-        //Debug.Log(enemies.Count);
+        //Debug.Log(transform.position);
+        targetDetected = false;
         targetLocked = false;
         defoultRotation = transform.rotation;
-    }
-
-    void Update()
-    {
-        
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.CompareTag("Enemy"))
-        {
+        {            
             enemies.Add(col.gameObject.GetComponent<Transform>());
 
-            if (!targetLocked)
+            if (!targetDetected)
             {
-                targetLocked = true;
-                StartCoroutine(TargetTracking(enemies[enemies.Count - 1]));
+                targetDetected = true;
+                currentTarget = col.gameObject.GetComponent<Transform>();
+                StartCoroutine(TargetTracking(col.gameObject.GetComponent<Transform>()));
             }
         } 
     }
@@ -55,27 +56,55 @@ public class LockOnTarget : MonoBehaviour
         Collider2D thisCollider = gameObject.GetComponent<Collider2D>();
         Collider2D enemyCollider = enemy.gameObject.GetComponent<Collider2D>();
 
-        while (thisCollider.IsTouching(enemyCollider))
+        while (true)
         {
-            direction = transform.position - enemy.position;
+            if (enemyCollider != null)
+            {
+                if (thisCollider.IsTouching(enemyCollider))
+                {
+                    direction = transform.position - enemy.position;
+                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                    rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * updateTime);
+                    // Если угол поворота башни по направлении к цели меньше accuracy, считаем цель захваченной 
+                    if ((rotation.eulerAngles.z - transform.rotation.eulerAngles.z) < accuracy)
+                    {
+                        targetLocked = true;
+                    }
+                    else
+                    {
+                        targetLocked = false;
+                    }
 
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * updateTime);
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
 
             yield return new WaitForSeconds(updateTime);
         }
 
         if (enemies.Count != 0)
         {
-            StartCoroutine(TargetTracking(enemies[enemies.Count - 1]));
+            currentTarget = enemies[0];
+            StartCoroutine(TargetTracking(enemies[0]));
         }
         else
         {
             InvokeRepeating("BackDefoultRotation", 0f, updateTime);
+            targetDetected = false;
             targetLocked = false;
+            currentTarget = null;
             yield break;
-        }   
+        }
+
+        yield break;
     }
 
     void BackDefoultRotation()

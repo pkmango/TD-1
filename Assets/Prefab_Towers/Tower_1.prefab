@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3369247284494943242}
   - component: {fileID: 7452489297731848571}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Turret
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,6 +29,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 2198046559653337603}
   - {fileID: 8049072777850471260}
   m_Father: {fileID: 8049072777301984059}
   m_RootOrder: 1
@@ -45,7 +46,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09b30e56fba11b449673ddee55f5913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnSpeed: 5
+  turnSpeed: 15
+  updateTime: 0.02
+  currentTarget: {fileID: 0}
+  accuracy: 7
+  targetDetected: 0
+  targetLocked: 0
 --- !u!58 &7452489297731848571
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -62,6 +68,36 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 4
+--- !u!1 &5278737668630940344
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2198046559653337603}
+  m_Layer: 8
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2198046559653337603
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5278737668630940344}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: -0.63, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8884962735651165211}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &8049072777301984054
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,7 +110,7 @@ GameObject:
   - component: {fileID: 8049072777301984052}
   - component: {fileID: 8049072777301984053}
   - component: {fileID: 2952246136570044968}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Tower_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,6 +192,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812607776aef899439e4a9225f2b60d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnPoint: {fileID: 2198046559653337603}
+  lockOnTarget: {fileID: 3369247284494943242}
+  bullet: {fileID: 131003257551420200, guid: c739959d1874e4244b48235463f735dd, type: 3}
+  fireRate: 0.2
 --- !u!1 &8049072777850471261
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,7 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8049072777850471260}
   - component: {fileID: 8049072777850471235}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +225,7 @@ Transform:
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_Children: []
   m_Father: {fileID: 8884962735651165211}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!212 &8049072777850471235
 SpriteRenderer:
@@ -225,7 +265,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 2980149248268456660, guid: b0e2953328b4d7446a4cfe407c88c7de,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -248,7 +288,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8049072778799535049}
   - component: {fileID: 8049072778799535048}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Stand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -262,7 +302,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8049072778799535050}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -307,7 +347,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 6496590081570138694, guid: b0e2953328b4d7446a4cfe407c88c7de,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
