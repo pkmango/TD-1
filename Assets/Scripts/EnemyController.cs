@@ -15,22 +15,29 @@ public class EnemyController : MonoBehaviour
     private int currentPoint;
     private Vector2 direction;
     private List<Vector2> wayPoints;
+    private GameController gameController;
 
 
     void Start()
     {
-        //Debug.Log(ground.WorldToCell(transform.position));
-        //Debug.Log(ground.CellToWorld(transform.position));
+        GameObject gameControllerObject = GameObject.FindWithTag("GameController");
+        if (gameControllerObject != null)
+        {
+            gameController = gameControllerObject.GetComponent<GameController>();
+            gameController.NewTower += NewPath;
+        }
+
         transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
         //Debug.Log(mylist);
-        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(target.transform.position);
+        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(transform.position, target.transform.position);
         if (wayPoints.Count != 0)
         {
             currentPoint = wayPoints.Count - 1;
         }
         else
         {
+            Debug.Log("Блокировка пути!");
             Destroy(gameObject);
         }
         
@@ -39,6 +46,11 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         Movement();
+    }
+
+    void NewPath()
+    {
+        Debug.Log("Событие!");
     }
 
     void Movement()

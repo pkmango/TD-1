@@ -21,13 +21,13 @@ public class PathFinder : MonoBehaviour
         //PathToTarget = GetPath(Target.transform.position);
     }
 
-    public List<Vector2> GetPath(Vector2 target)
+    public List<Vector2> GetPath(Vector2 start, Vector2 target)
     {
         PathToTarget = new List<Vector2>();
         CheckedNodes = new List<Node>();
         WaitingNodes = new List<Node>();
 
-        Vector2 StartPosition = new Vector2(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y));
+        Vector2 StartPosition = new Vector2(Mathf.Round(start.x), Mathf.Round(start.y));
         Vector2 TargetPosition = new Vector2(Mathf.Round(target.x), Mathf.Round(target.y));
         
         if(StartPosition == TargetPosition) return PathToTarget;
@@ -60,7 +60,7 @@ public class PathFinder : MonoBehaviour
             }
         }
         FreeNodes = CheckedNodes;
-        Debug.Log("код выполнился");
+        Debug.Log("путь не обнаружен");
         return PathToTarget;
     }
 

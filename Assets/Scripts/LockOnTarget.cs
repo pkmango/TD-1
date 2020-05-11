@@ -62,10 +62,11 @@ public class LockOnTarget : MonoBehaviour
             {
                 if (thisCollider.IsTouching(enemyCollider))
                 {
-                    direction = transform.position - enemy.position;
+                    direction = enemy.position - transform.position;
                     float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                     rotation = Quaternion.AngleAxis(angle, Vector3.forward);
                     transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * updateTime);
+
                     // Если угол поворота башни по направлении к цели меньше accuracy, считаем цель захваченной 
                     if ((rotation.eulerAngles.z - transform.rotation.eulerAngles.z) < accuracy)
                     {
