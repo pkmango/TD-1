@@ -196,6 +196,7 @@ MonoBehaviour:
   lockOnTarget: {fileID: 3369247284494943242}
   bullet: {fileID: 131003257551420200, guid: c739959d1874e4244b48235463f735dd, type: 3}
   fireRate: 0.2
+  cost: 5
 --- !u!1 &8049072777850471261
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class TowerController : MonoBehaviour
     public LockOnTarget lockOnTarget;
     public GameObject bullet;
     public float fireRate;
+    public int cost;
 
     void Start()
     {

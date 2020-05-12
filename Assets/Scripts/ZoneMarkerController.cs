@@ -41,7 +41,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        if (constrAlowed)
+        if (constrAlowed && tower.GetComponent<TowerController>().cost <= gameController.currentMoney)
         {
             GameObject newTower = Instantiate(tower, transform.position, tower.transform.rotation);
             wayPoints = gameObject.GetComponent<PathFinder>().GetPath(spawn.transform.position, target.transform.position);
@@ -55,6 +55,8 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
             else
             {
                 gameController.AddingNewTower();
+                gameController.currentMoney -= tower.GetComponent<TowerController>().cost;
+                gameController.moneyText.text = gameController.currentMoney.ToString();
                 //gameController.NewTower();
                 Destroy(gameObject);
             }

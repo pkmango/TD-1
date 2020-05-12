@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -15,7 +16,10 @@ public class GameController : MonoBehaviour
     private float fixWidth = 9f; // Фиксированная ширина поля
     public delegate void AddingTowers();
     public event AddingTowers NewTower;
+    public Text moneyText;
+    public int startMoney;
 
+    public int currentMoney;
     private List<GameObject> markers = new List<GameObject>();
     //private GameObject[,] markers;
 
@@ -32,11 +36,13 @@ public class GameController : MonoBehaviour
     {
         //markers = new GameObject[ConstrZoneWidth, ConstrZoneHeight];
         //ShowConstrZone();
+        moneyText.text = startMoney.ToString();
+        currentMoney = startMoney;
     }
 
     public void AddingNewTower()
     {
-        NewTower();
+        NewTower?.Invoke();
     }
 
     public void ShowConstrZone()

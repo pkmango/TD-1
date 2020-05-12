@@ -8,6 +8,7 @@ TagManager:
   - Towers
   - Spawn
   - Target
+  - BlockingText
   layers:
   - Default
   - TransparentFX
