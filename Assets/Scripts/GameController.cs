@@ -18,8 +18,25 @@ public class GameController : MonoBehaviour
     public event AddingTowers NewTower;
     public Text moneyText;
     public int startMoney;
-
     public int currentMoney;
+    // Данные для меню с характеристиками tower
+    public GameObject characteristicsMenu;
+    public Text costText;
+    public Text damageText;
+    public Text rangeText;
+    public Text fireRateText;
+    public Text towerNameText;
+    // Данные для меню апгрейда и продажи
+    public GameObject upgradeMenu;
+    public Text costTextUp;
+    public Text damageTextUp;
+    public Text rangeTextUp;
+    public Text fireRateTextUp;
+    public Text towerNameTextUp;
+    public Text sellText;
+
+    public GameObject pressedTower; // Башня на поле, на которую кликнул игрок
+
     private List<GameObject> markers = new List<GameObject>();
     //private GameObject[,] markers;
 
@@ -64,6 +81,22 @@ public class GameController : MonoBehaviour
         }  
     }
 
+    public void SetCharacteristicsMenu()
+    {
+        GameObject towersObject = GameObject.FindWithTag("Towers");
+        if (towersObject != null)
+        {
+            characteristicsMenu.SetActive(true);
+            upgradeMenu.SetActive(false);
+            TowerController tower = towersObject.GetComponent<Towers>().selectedTower.GetComponent<TowerController>();
+            costText.text = tower.cost.ToString();
+            damageText.text = tower.damage.ToString();
+            rangeText.text = tower.range.ToString();
+            fireRateText.text = tower.fireRate.ToString();
+            towerNameText.text = tower.towerName;
+        }
+    }
+
     public void HideConstrZone()
     {
         foreach(GameObject i in markers)
@@ -71,5 +104,19 @@ public class GameController : MonoBehaviour
             Destroy(i);
         }
         markers.RemoveRange(0, markers.Count);
+        characteristicsMenu.SetActive(false);
+    }
+
+    public void SellTower()
+    {
+        NewTower?.Invoke();
+        upgradeMenu.SetActive(false);
+        if(pressedTower != null)
+        {
+            currentMoney -= pressedTower.GetComponent<TowerController>().currentCost / 2;
+            moneyText.text = currentMoney.ToString();
+            Destroy(pressedTower);
+        }
+        
     }
 }

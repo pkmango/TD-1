@@ -14,6 +14,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
     private GameObject spawn;
     private GameObject target;
     private Text blocking;
+    private IEnumerator enemiesCheck;
     private int count; // Счетчик для BlockingTwinkle
     private List<Vector2> wayPoints;
     private bool constrAlowed; // Если true - постройка разрешена
@@ -36,7 +37,8 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
         target = GameObject.FindWithTag("Target");
         blocking = GameObject.FindWithTag("BlockingText").GetComponent<Text>();
 
-        StartCoroutine(EnemiesCheck());
+        enemiesCheck = EnemiesCheck();
+        StartCoroutine(enemiesCheck);
     }
 
     public void OnPointerClick(PointerEventData pointerEventData)
@@ -47,8 +49,11 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
             wayPoints = gameObject.GetComponent<PathFinder>().GetPath(spawn.transform.position, target.transform.position);
             if(wayPoints.Count == 0)
             {
-                count = 0;
-                InvokeRepeating("BlockingTwinkle", 0f, 0.12f);
+                blocking.enabled = false;
+                StopCoroutine(enemiesCheck);
+                StartCoroutine(BlockingTwinkle());
+                gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+                constrAlowed = false;
                 Debug.Log("БЛОКИРОВКА!");
                 Destroy(newTower);
             }
@@ -65,17 +70,18 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
         //gameController.HideConstrZone();
     }
 
-    void BlockingTwinkle()
+    IEnumerator BlockingTwinkle()
     {
-        if (blocking != null)
+        float startTime = Time.time;
+
+        while(Time.time - startTime < 0.6f)
         {
             blocking.enabled = !blocking.enabled;
-            if (count == 5)
-            {
-                CancelInvoke("BlockingTwinkle");
-            }
-            count++;
+            yield return new WaitForSeconds(0.12f);
         }
+
+        blocking.enabled = false;
+        yield break;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -88,7 +94,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
         //throw new System.NotImplementedException();
     }
 
-    IEnumerator EnemiesCheck()
+    public IEnumerator EnemiesCheck()
     {
         while (true)
         {

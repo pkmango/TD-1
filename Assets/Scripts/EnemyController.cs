@@ -16,7 +16,8 @@ public class EnemyController : MonoBehaviour
     private Vector2 direction;
     private List<Vector2> wayPoints;
     private GameController gameController;
-
+    //private int nextPoint = 0;
+    private Vector2 nextPosition = Vector2.zero;
 
     void Start()
     {
@@ -29,10 +30,8 @@ public class EnemyController : MonoBehaviour
 
         transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
-        //Debug.Log(mylist);
         NewPath();
-
-
+        nextPosition = wayPoints[currentPoint];
     }
 
     void Update()
@@ -42,7 +41,7 @@ public class EnemyController : MonoBehaviour
 
     void NewPath()
     {
-        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(transform.position, target.transform.position);
+        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(currentPosition, target.transform.position);
         if (wayPoints.Count != 0)
         {
             currentPoint = wayPoints.Count - 1;
@@ -60,7 +59,7 @@ public class EnemyController : MonoBehaviour
     {
         if (wayPoints != null)
         {
-            transform.position = Vector2.Lerp(currentPosition, wayPoints[currentPoint], progress);
+            transform.position = Vector2.Lerp(currentPosition, nextPosition, progress);
         }
         
 
@@ -77,8 +76,9 @@ public class EnemyController : MonoBehaviour
                 return;
             }
             progress = 0f;
-            currentPosition = wayPoints[currentPoint];
+            currentPosition = nextPosition;
             currentPoint--;
+            nextPosition = wayPoints[currentPoint];
             ChangeRotation();
         }
         
