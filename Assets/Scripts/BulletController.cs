@@ -4,6 +4,7 @@ public class BulletController : MonoBehaviour
 {
     public float speed;
     public Transform targetPosition;
+    public int damage;
 
     private Vector2 startPosition;
     private Vector2 endPosition;
@@ -36,6 +37,11 @@ public class BulletController : MonoBehaviour
         }
         else
         {
+            if (targetPosition != null)
+            {
+                targetPosition.gameObject.GetComponent<EnemyController>().Health(damage);
+            }
+            
             Destroy(gameObject);
         }
     }

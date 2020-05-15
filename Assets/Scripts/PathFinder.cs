@@ -11,11 +11,6 @@ public class PathFinder : MonoBehaviour
     //public GameObject Target;
     public LayerMask SolidLayer;
 
-    private void Start()
-    {
-
-    }
-
     void Update()
     {
         //PathToTarget = GetPath(Target.transform.position);
@@ -101,20 +96,20 @@ public class PathFinder : MonoBehaviour
         return Neighbours;
     }
 
-    //void OnDrawGizmos()
-    //{
-    //    foreach (var item in CheckedNodes)
-    //    {
-    //        Gizmos.color = Color.yellow;
-    //        Gizmos.DrawSphere(new Vector2(item.Position.x, item.Position.y), 0.1f);
-    //    }
-    //    if (PathToTarget != null)
-    //    foreach (var item in PathToTarget)
-    //    {
-    //        Gizmos.color = Color.red;
-    //        Gizmos.DrawSphere(new Vector2(item.x, item.y), 0.2f);
-    //    }
-    //}
+    void OnDrawGizmos()
+    {
+        foreach (var item in CheckedNodes)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(new Vector2(item.Position.x, item.Position.y), 0.1f);
+        }
+        if (PathToTarget != null)
+            foreach (var item in PathToTarget)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(new Vector2(item.x, item.y), 0.2f);
+            }
+    }
 
 }
 

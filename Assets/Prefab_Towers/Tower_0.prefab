@@ -197,9 +197,10 @@ MonoBehaviour:
   bullet: {fileID: 131003257551420200, guid: c739959d1874e4244b48235463f735dd, type: 3}
   towerName: First Tower
   cost: 5
-  damage: 2
-  range: 4
-  fireRate: 1
+  damage: 1
+  range: 3.5
+  fireRate: 2
+  turret: {fileID: 4066338026818645264}
   currentCost: 0
 --- !u!1 &8049072777850471261
 GameObject:

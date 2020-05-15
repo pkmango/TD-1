@@ -10,9 +10,10 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public GameObject bullet;
     public string towerName;
     public int cost; // Цена
-    public float damage;
-    public float range;
+    public int damage; // Наносимый урон
+    public float range; // Радиус атаки
     public float fireRate; // Скоростельность (выстрелов в секунду)
+    public GameObject turret;
 
     private GameController gameController;
     public int currentCost;
@@ -25,20 +26,20 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             gameController = gameControllerObject.GetComponent<GameController>();
         }
 
+        turret.GetComponent<CircleCollider2D>().radius = range;
         StartCoroutine(Fire());
         currentCost = cost;
     }
 
     IEnumerator Fire()
     {
-        //yield return new WaitForSeconds(fireRate); // Задержка чтобы не было двойных пулек
-
         while (true)
         {
             if (lockOnTarget.targetLocked)
             {
                 GameObject newBullet = Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
                 newBullet.GetComponent<BulletController>().targetPosition = lockOnTarget.currentTarget;
+                newBullet.GetComponent<BulletController>().damage = damage;
             }
             
 

@@ -46,28 +46,44 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
         if (constrAlowed && tower.GetComponent<TowerController>().cost <= gameController.currentMoney)
         {
             GameObject newTower = Instantiate(tower, transform.position, tower.transform.rotation);
+            // Проверяем блокировку от старта до финиша
             wayPoints = gameObject.GetComponent<PathFinder>().GetPath(spawn.transform.position, target.transform.position);
             if(wayPoints.Count == 0)
             {
-                blocking.enabled = false;
-                StopCoroutine(enemiesCheck);
-                StartCoroutine(BlockingTwinkle());
-                gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-                constrAlowed = false;
-                Debug.Log("БЛОКИРОВКА!");
-                Destroy(newTower);
+                Blocking(newTower);
             }
             else
             {
-                gameController.AddingNewTower();
-                gameController.currentMoney -= tower.GetComponent<TowerController>().cost;
-                gameController.moneyText.text = gameController.currentMoney.ToString();
-                //gameController.NewTower();
-                Destroy(gameObject);
+                // Проверяем блокировку от всех врагов на поле до финиша
+                GameObject[] currentEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+                foreach(GameObject i in currentEnemies)
+                {
+                    wayPoints = gameObject.GetComponent<PathFinder>().GetPath(i.transform.position, target.transform.position);
+                    if (wayPoints.Count == 0)
+                    {
+                        Blocking(newTower);
+                    }
+                    else
+                    {
+                        gameController.AddingNewTower();
+                        gameController.currentMoney -= tower.GetComponent<TowerController>().cost;
+                        gameController.moneyText.text = gameController.currentMoney.ToString();
+                        Destroy(gameObject);
+                    }
+                }
             }
         }
-        
-        //gameController.HideConstrZone();
+    }
+
+    private void Blocking(GameObject tower)
+    {
+        blocking.enabled = false;
+        StopCoroutine(enemiesCheck);
+        StartCoroutine(BlockingTwinkle());
+        gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+        constrAlowed = false;
+        Debug.Log("БЛОКИРОВКА!");
+        Destroy(tower);
     }
 
     IEnumerator BlockingTwinkle()
