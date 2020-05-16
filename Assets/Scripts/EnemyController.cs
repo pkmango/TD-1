@@ -59,8 +59,8 @@ public class EnemyController : MonoBehaviour
         {
             Debug.Log("Блокировка пути!");
             gameController.NewTower += ChangePath;
-            Destroy(gameObject);
             Destroy(healthBar);
+            Destroy(gameObject);
         }
         //Debug.Log("Событие!");
     }
@@ -82,8 +82,8 @@ public class EnemyController : MonoBehaviour
             if(currentPoint == 0)
             {
                 gameController.NewTower += ChangePath;
-                Destroy(gameObject);
                 Destroy(healthBar);
+                Destroy(gameObject);
                 return;
             }
             progress = 0f;
@@ -97,8 +97,6 @@ public class EnemyController : MonoBehaviour
             {
                 currentPoint--;
             }
-            //currentPoint--;
-            //nextPosition = wayPoints[currentPoint];
             
             nextPosition = wayPoints[currentPoint];
             ChangeRotation();

@@ -198,7 +198,7 @@ MonoBehaviour:
   towerName: First Tower
   cost: 5
   damage: 1
-  range: 3.5
+  range: 2.5
   fireRate: 2
   turret: {fileID: 4066338026818645264}
   currentCost: 0

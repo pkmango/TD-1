@@ -1,23 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Collections;
 
 public class GameController : MonoBehaviour
 {
+    public Wave[] waves; // Массив с волнами врагов
+    public float startWait; // Стартовое ожидание
+    public float spawnWait; // Пауза между спауном врагов
+    public float waveWait; // Пауза между волнами
+    public GameObject spawnPoint; // Точка спауна
+    public GameObject mainMenu;
+    public GameObject startButton;
     public Vector3 constrZonePosition; // Начальная точка для построения разрешенной зоны строительства
     public int constrZoneWidth; // Ширина зоны строительства
     public int constrZoneHeight; // Высота зоны строительства
     public GameObject constrZoneMarker;
     public LayerMask stopConstr;
-
-    private float ratio; // Соотношение сторон
-    private float currentHeight; // Текущая высота
-    private float ortSize; // Необходимый orthographicSize, чтобы ширина поля осталась фиксированная (меняется высота)
-    private float fixWidth = 9f; // Фиксированная ширина поля
     public delegate void AddingTowers();
-    public event AddingTowers NewTower;
+    public event AddingTowers NewTower; // Событие для установки новой башни
     public Text moneyText;
     public int startMoney;
+    [HideInInspector]
     public int currentMoney;
     // Данные для меню с характеристиками tower
     public GameObject characteristicsMenu;
@@ -34,11 +38,13 @@ public class GameController : MonoBehaviour
     public Text fireRateTextUp;
     public Text towerNameTextUp;
     public Text sellText;
-
     public GameObject pressedTower; // Башня на поле, на которую кликнул игрок
 
+    private float ratio; // Соотношение сторон
+    private float currentHeight; // Текущая высота
+    private float ortSize; // Необходимый orthographicSize, чтобы ширина поля осталась фиксированная (меняется высота)
+    private float fixWidth = 9f; // Фиксированная ширина поля
     private List<GameObject> markers = new List<GameObject>();
-    //private GameObject[,] markers;
 
     void Awake()
     {
@@ -55,6 +61,25 @@ public class GameController : MonoBehaviour
         //ShowConstrZone();
         moneyText.text = startMoney.ToString();
         currentMoney = startMoney;
+
+        
+    }
+
+    IEnumerator SpawnWaves()
+    {
+        yield return new WaitForSeconds(startWait);
+
+        for (int i = 0; i < waves.Length; i++)
+        {
+            for (int j = 0; j < waves[i].enemies.Length; j++)
+            {
+                Instantiate(waves[i].enemies[j], spawnPoint.transform.position, Quaternion.identity);
+
+                yield return new WaitForSeconds(spawnWait);
+            }
+
+            yield return new WaitForSeconds(waveWait);
+        }
     }
 
     public void AddingNewTower()
@@ -118,5 +143,21 @@ public class GameController : MonoBehaviour
             Destroy(pressedTower);
         }
         
+    }
+
+    public void NewGame()
+    {
+        mainMenu.SetActive(false);
+    }
+
+    public void Started()
+    {
+        startButton.SetActive(false);
+        StartCoroutine(SpawnWaves());
+    }
+
+    public void QuitGame ()
+    {
+        Application.Quit();
     }
 }

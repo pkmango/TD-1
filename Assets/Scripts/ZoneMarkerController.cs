@@ -51,28 +51,67 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
             if(wayPoints.Count == 0)
             {
                 Blocking(newTower);
+                return;
             }
             else
             {
-                // Проверяем блокировку от всех врагов на поле до финиша
-                GameObject[] currentEnemies = GameObject.FindGameObjectsWithTag("Enemy");
-                foreach(GameObject i in currentEnemies)
+                if (TrapChecking(newTower))
                 {
-                    wayPoints = gameObject.GetComponent<PathFinder>().GetPath(i.transform.position, target.transform.position);
-                    if (wayPoints.Count == 0)
+                    Blocking(newTower);
+                    return;
+                }
+                gameController.AddingNewTower();
+                gameController.currentMoney -= tower.GetComponent<TowerController>().cost;
+                gameController.moneyText.text = gameController.currentMoney.ToString();
+                Destroy(gameObject);
+            }
+        }
+    }
+
+    // Метод вычисляет не попадет ли враг в замкнутый круг из башен. Если True - попадет
+    private bool TrapChecking(GameObject tower)
+    {
+        // Проверяем есть ли враги на карте
+        GameObject[] currentEnemies = GameObject.FindGameObjectsWithTag("Enemy");
+        if(currentEnemies.Length == 0)
+        {
+            return false;
+        }
+        
+        // Проверяем достаточно ли соседних башен чтобы сомкнуть кольцо
+        LayerMask mask = LayerMask.GetMask("Tower");
+        Collider2D[] neighboringTowers = Physics2D.OverlapCircleAll(transform.position, 1f, mask);
+        if (neighboringTowers.Length < 3)
+        {
+            return false;
+        }
+
+        // Фомируем массив соседних точек
+        Vector2[] neighboringPoints =
+        {
+            new Vector2(tower.transform.position.x, tower.transform.position.y + 1),
+            new Vector2(tower.transform.position.x + 1, tower.transform.position.y),
+            new Vector2(tower.transform.position.x, tower.transform.position.y - 1),
+            new Vector2(tower.transform.position.x - 1, tower.transform.position.y)
+        };
+        // Проверяем попала ли точка внутрь замкнутого кольца
+        foreach (Vector2 i in neighboringPoints)
+        {
+            wayPoints = gameObject.GetComponent<PathFinder>().GetPath(i, target.transform.position);
+            if (wayPoints.Count == 0)
+            {
+                // Проверяем есть ли внутри замкнутого кольца враги
+                foreach(GameObject j in currentEnemies)
+                {
+                    wayPoints = gameObject.GetComponent<PathFinder>().GetPath(i, j.transform.position);
+                    if (wayPoints.Count > 0)
                     {
-                        Blocking(newTower);
-                    }
-                    else
-                    {
-                        gameController.AddingNewTower();
-                        gameController.currentMoney -= tower.GetComponent<TowerController>().cost;
-                        gameController.moneyText.text = gameController.currentMoney.ToString();
-                        Destroy(gameObject);
+                        return true;
                     }
                 }
             }
         }
+        return false;
     }
 
     private void Blocking(GameObject tower)
