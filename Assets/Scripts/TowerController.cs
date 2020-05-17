@@ -9,14 +9,33 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public LockOnTarget lockOnTarget;
     public GameObject bullet;
     public string towerName;
-    public int cost; // Цена
-    public int damage; // Наносимый урон
-    public float range; // Радиус атаки
-    public float fireRate; // Скоростельность (выстрелов в секунду)
+
+    // Характеристики башни
+    public int level = 0;
+    public int maxLevel = 4;
+    public int[] costs; // Цена
+    public int[] damages; // Наносимый урон
+    public float[] ranges; // Радиус атаки
+    public float[] fireRates; // Скоростельность (выстрелов в секунду)
+    public SpriteRenderer chevron;
+    public Sprite[] chevrons;
+
     public GameObject turret;
 
     private GameController gameController;
-    public int currentCost;
+    [HideInInspector]
+    public int currentCost, currentDamage;
+    [HideInInspector]
+    public float currentRange, currentFireRate;
+
+    void Awake()
+    {
+        currentCost = costs[level];
+        currentDamage = damages[level];
+        currentRange = ranges[level];
+        currentFireRate = fireRates[level];
+        turret.GetComponent<CircleCollider2D>().radius = currentRange;
+    }
 
     void Start()
     {
@@ -26,9 +45,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             gameController = gameControllerObject.GetComponent<GameController>();
         }
 
-        turret.GetComponent<CircleCollider2D>().radius = range;
         StartCoroutine(Fire());
-        currentCost = cost;
     }
 
     IEnumerator Fire()
@@ -39,27 +56,66 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             {
                 GameObject newBullet = Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
                 newBullet.GetComponent<BulletController>().targetPosition = lockOnTarget.currentTarget;
-                newBullet.GetComponent<BulletController>().damage = damage;
+                newBullet.GetComponent<BulletController>().damage = currentDamage;
             }
-            
 
-            yield return new WaitForSeconds(1f / fireRate);
+            yield return new WaitForSeconds(1f / currentFireRate);
         }
         
+    }
+
+    public void Upgrade()
+    {
+        currentCost += costs[level];
+        currentDamage = damages[level];
+        currentRange = ranges[level];
+        currentFireRate = fireRates[level];
+        // В массиве chevrones на 1 меньше членов, т.к. нулевое звание не отображается
+        chevron.sprite = level != 0 ? chevrons[level - 1] : null;
+        UpdateUpgradeMenu();
+    }
+    private void UpdateUpgradeMenu()
+    {
+        gameController.damageTextUp.text = currentDamage.ToString();
+        gameController.rangeTextUp.text = currentRange.ToString();
+        gameController.fireRateTextUp.text = currentFireRate.ToString();
+        if (level != maxLevel)
+        {
+            gameController.upgradeButton.SetActive(true);
+            gameController.costTextUp.text = currentCost.ToString() + " (" + costs[level + 1].ToString() + ")";
+
+            if (currentDamage != damages[level + 1])
+            {
+                gameController.damageTextUp.text += " (" + damages[level + 1].ToString() + ")";
+            }
+
+            if (currentRange != ranges[level + 1])
+            {
+                gameController.rangeTextUp.text += " (" + ranges[level + 1].ToString() + ")";
+            }
+
+            if (currentFireRate != fireRates[level + 1])
+            {
+                gameController.fireRateTextUp.text += " (" + fireRates[level + 1].ToString() + ")";
+            }
+        }
+        else
+        {
+            gameController.costTextUp.text = currentCost.ToString();
+            gameController.upgradeButton.SetActive(false);
+        }
+
+        gameController.sellText.text = "Sell $" + (currentCost / 2).ToString();
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Нажатие на башню");
-        gameController.pressedTower = gameObject;
+        gameController.pressedTower = this;
         gameController.HideConstrZone();
         gameController.upgradeMenu.SetActive(true);
-        gameController.costTextUp.text = cost.ToString();
-        gameController.damageTextUp.text = damage.ToString();
-        gameController.rangeTextUp.text = range.ToString();
-        gameController.fireRateTextUp.text = fireRate.ToString();
+        UpdateUpgradeMenu();
         gameController.towerNameTextUp.text = towerName;
-        gameController.sellText.text = "Sell $" + (currentCost / 2).ToString();
     }
 
     public void OnPointerDown(PointerEventData eventData)

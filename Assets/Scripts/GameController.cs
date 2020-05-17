@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public GameObject spawnPoint; // Точка спауна
     public GameObject mainMenu;
     public GameObject startButton;
+    public GameObject upgradeButton;
     public Vector3 constrZonePosition; // Начальная точка для построения разрешенной зоны строительства
     public int constrZoneWidth; // Ширина зоны строительства
     public int constrZoneHeight; // Высота зоны строительства
@@ -38,7 +39,7 @@ public class GameController : MonoBehaviour
     public Text fireRateTextUp;
     public Text towerNameTextUp;
     public Text sellText;
-    public GameObject pressedTower; // Башня на поле, на которую кликнул игрок
+    public TowerController pressedTower; // Башня на поле, на которую кликнул игрок
 
     private float ratio; // Соотношение сторон
     private float currentHeight; // Текущая высота
@@ -114,10 +115,10 @@ public class GameController : MonoBehaviour
             characteristicsMenu.SetActive(true);
             upgradeMenu.SetActive(false);
             TowerController tower = towersObject.GetComponent<Towers>().selectedTower.GetComponent<TowerController>();
-            costText.text = tower.cost.ToString();
-            damageText.text = tower.damage.ToString();
-            rangeText.text = tower.range.ToString();
-            fireRateText.text = tower.fireRate.ToString();
+            costText.text = tower.costs[0].ToString();
+            damageText.text = tower.damages[0].ToString();
+            rangeText.text = tower.ranges[0].ToString();
+            fireRateText.text = tower.fireRates[0].ToString();
             towerNameText.text = tower.towerName;
         }
     }
@@ -136,13 +137,20 @@ public class GameController : MonoBehaviour
     {
         NewTower?.Invoke();
         upgradeMenu.SetActive(false);
-        if(pressedTower != null)
+        currentMoney += pressedTower.currentCost / 2;
+        moneyText.text = currentMoney.ToString();
+        Destroy(pressedTower.gameObject);
+    }
+
+    public void LevelUp()
+    {
+        if(pressedTower.level != pressedTower.maxLevel)
         {
-            currentMoney -= pressedTower.GetComponent<TowerController>().currentCost / 2;
+            pressedTower.level++;
+            currentMoney -= pressedTower.costs[pressedTower.level];
             moneyText.text = currentMoney.ToString();
-            Destroy(pressedTower);
+            pressedTower.Upgrade();
         }
-        
     }
 
     public void NewGame()

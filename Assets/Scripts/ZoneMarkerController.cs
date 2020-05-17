@@ -43,7 +43,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        if (constrAlowed && tower.GetComponent<TowerController>().cost <= gameController.currentMoney)
+        if (constrAlowed && tower.GetComponent<TowerController>().currentCost <= gameController.currentMoney)
         {
             GameObject newTower = Instantiate(tower, transform.position, tower.transform.rotation);
             // Проверяем блокировку от старта до финиша
@@ -61,7 +61,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
                     return;
                 }
                 gameController.AddingNewTower();
-                gameController.currentMoney -= tower.GetComponent<TowerController>().cost;
+                gameController.currentMoney -= newTower.GetComponent<TowerController>().currentCost;
                 gameController.moneyText.text = gameController.currentMoney.ToString();
                 Destroy(gameObject);
             }

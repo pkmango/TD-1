@@ -59,7 +59,6 @@ public class EnemyController : MonoBehaviour
         {
             Debug.Log("Блокировка пути!");
             gameController.NewTower += ChangePath;
-            Destroy(healthBar);
             Destroy(gameObject);
         }
         //Debug.Log("Событие!");
@@ -82,7 +81,6 @@ public class EnemyController : MonoBehaviour
             if(currentPoint == 0)
             {
                 gameController.NewTower += ChangePath;
-                Destroy(healthBar);
                 Destroy(gameObject);
                 return;
             }
@@ -146,7 +144,6 @@ public class EnemyController : MonoBehaviour
         if (currentHp <= 0)
         {
             Instantiate(explosion_vfx, transform.position, Quaternion.identity);
-            Destroy(healthBar);
             gameController.NewTower += ChangePath;
             Destroy(gameObject);
             return null;
@@ -156,5 +153,13 @@ public class EnemyController : MonoBehaviour
         greenBar.transform.localPosition = new Vector2(leftBounds, 0.33f);
 
         return healthBar;
+    }
+
+    private void OnDestroy()
+    {
+        if(healthBar != null)
+        {
+            Destroy(healthBar);
+        }
     }
 }
