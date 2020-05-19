@@ -22,8 +22,13 @@ public class GameController : MonoBehaviour
     public event AddingTowers NewTower; // Событие для установки новой башни
     public Text moneyText;
     public int startMoney;
+    public Text livesText;
+    public int startLives = 20;
     [HideInInspector]
-    public int currentMoney;
+    public int currentMoney, currentLives;
+    // Меню с прогрессом, отоброжаемое когда башня апгрейдится
+    public GameObject upgradingMenu;
+    public RectTransform upgradeProgress;
     // Данные для меню с характеристиками tower
     public GameObject characteristicsMenu;
     public Text costText;
@@ -58,12 +63,10 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        //markers = new GameObject[ConstrZoneWidth, ConstrZoneHeight];
-        //ShowConstrZone();
         moneyText.text = startMoney.ToString();
         currentMoney = startMoney;
-
-        
+        livesText.text = startLives.ToString();
+        currentLives = startLives;
     }
 
     IEnumerator SpawnWaves()
@@ -139,6 +142,8 @@ public class GameController : MonoBehaviour
         upgradeMenu.SetActive(false);
         currentMoney += pressedTower.currentCost / 2;
         moneyText.text = currentMoney.ToString();
+        pressedTower.StopAllCoroutines();
+        Destroy(pressedTower.upgradeProgress.gameObject);
         Destroy(pressedTower.gameObject);
     }
 
@@ -146,10 +151,7 @@ public class GameController : MonoBehaviour
     {
         if(pressedTower.level != pressedTower.maxLevel)
         {
-            pressedTower.level++;
-            currentMoney -= pressedTower.costs[pressedTower.level];
-            moneyText.text = currentMoney.ToString();
-            pressedTower.Upgrade();
+            pressedTower.Upgrade(upgradingMenu);
         }
     }
 
@@ -162,6 +164,11 @@ public class GameController : MonoBehaviour
     {
         startButton.SetActive(false);
         StartCoroutine(SpawnWaves());
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("Game Over");
     }
 
     public void QuitGame ()
