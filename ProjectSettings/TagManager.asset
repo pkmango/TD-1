@@ -11,6 +11,8 @@ TagManager:
   - BlockingText
   - Progress
   - Tower
+  - Ground
+  - TowerButton
   layers:
   - Default
   - TransparentFX

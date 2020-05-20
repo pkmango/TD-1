@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -37,6 +36,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public int currentCost, currentDamage;
     [HideInInspector]
     public float currentRange, currentFireRate;
+    private TilemapController ground;
 
     void Awake()
     {
@@ -56,6 +56,13 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         {
             gameController = gameControllerObject.GetComponent<GameController>();
         }
+        GameObject groundObject = GameObject.FindWithTag("Ground");
+        if (groundObject != null)
+        {
+            ground = groundObject.GetComponent<TilemapController>();
+            ground.Click += ResetSelection;
+        }
+
 
         GameObject newProgress = Instantiate(progress.gameObject, gameController.upgradingMenu.gameObject.transform);
         upgradeProgress = newProgress.GetComponent<RectTransform>();
@@ -78,11 +85,6 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         
     }
 
-    public void UpgradeInProgress()
-    {
-
-    }
-
     public void Upgrade(GameObject upgradingMenu)
     {
         upgrading = true;
@@ -97,6 +99,15 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         upgradeProgress.gameObject.SetActive(true);
 
         StartCoroutine(Upgrading(upgradingMenu));
+    }
+
+    public void ResetSelection()
+    {
+        active = false;
+        glow.SetActive(false);
+        circle.color = new Color(1f, 1f, 1f, 0f);
+        //gameController.HideConstrZone();
+        gameController.upgradeMenu.SetActive(false);
     }
 
     IEnumerator Upgrading(GameObject upgradingMenu)
@@ -171,6 +182,12 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     {
         Debug.Log("Нажатие на башню");
 
+        GameObject[] towerButtons = GameObject.FindGameObjectsWithTag("TowerButton");
+        foreach (GameObject button in towerButtons)
+        {
+            button.GetComponent<TowerButton>().SetTransparent();
+        }
+
         GameObject[] allTowers = GameObject.FindGameObjectsWithTag("Tower");
         foreach(GameObject i in allTowers)
         {
@@ -212,5 +229,10 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public void OnPointerUp(PointerEventData eventData)
     {
         //throw new System.NotImplementedException();
+    }
+
+    private void OnDestroy()
+    {
+        ground.Click -= ResetSelection;
     }
 }

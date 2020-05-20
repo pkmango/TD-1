@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class EnemyController : MonoBehaviour
 {
     public float speed;
     public int hp; // health points
+    [HideInInspector]
     public GameObject healthBar;
     public float barLenght = 15f; // Длина полоски healthBar
+    public float barPositionY = 0.33f; // Позиция по Y
     public GameObject explosion_vfx;
 
     private int currentHp;
@@ -42,7 +42,7 @@ public class EnemyController : MonoBehaviour
         nextPosition = wayPoints[currentPoint];
     }
 
-    void Update()
+    void FixedUpdate()
     {
         healthBar.transform.position = transform.position;
         Movement();
@@ -104,6 +104,7 @@ public class EnemyController : MonoBehaviour
             
             nextPosition = wayPoints[currentPoint];
             ChangeRotation();
+            progress += Time.deltaTime * speed;
         }
         
     }
@@ -140,7 +141,7 @@ public class EnemyController : MonoBehaviour
         healthBarRedSR.sprite = healthBarSprite;
         healthBarRedSR.color = Color.red;
         redBar.transform.localScale = new Vector3(barLenght, 1f, 1f);
-        redBar.transform.localPosition = new Vector2(leftBounds, 0.33f);
+        redBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
         // Зеленая полоска
         SpriteRenderer healthBarGreenSR = greenBar.AddComponent<SpriteRenderer>() as SpriteRenderer;
         healthBarGreenSR.sortingOrder = 2;
@@ -156,7 +157,7 @@ public class EnemyController : MonoBehaviour
         }
         float newGreenBarLenght = barLenght * currentHp / hp; // Вычисляем новую длину полоски здоровья при получении урона
         greenBar.transform.localScale = new Vector3(newGreenBarLenght, 1f, 1f);
-        greenBar.transform.localPosition = new Vector2(leftBounds, 0.33f);
+        greenBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
 
         return healthBar;
     }

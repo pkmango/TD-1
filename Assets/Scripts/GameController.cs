@@ -51,6 +51,7 @@ public class GameController : MonoBehaviour
     private float ortSize; // Необходимый orthographicSize, чтобы ширина поля осталась фиксированная (меняется высота)
     private float fixWidth = 9f; // Фиксированная ширина поля
     private List<GameObject> markers = new List<GameObject>();
+    private TilemapController ground; // Земля
 
     void Awake()
     {
@@ -67,6 +68,13 @@ public class GameController : MonoBehaviour
         currentMoney = startMoney;
         livesText.text = startLives.ToString();
         currentLives = startLives;
+
+        GameObject groundObject = GameObject.FindWithTag("Ground");
+        if (groundObject != null)
+        {
+            ground = groundObject.GetComponent<TilemapController>();
+            ground.Click += HideConstrZone;
+        }
     }
 
     IEnumerator SpawnWaves()
@@ -124,6 +132,13 @@ public class GameController : MonoBehaviour
             fireRateText.text = tower.fireRates[0].ToString();
             towerNameText.text = tower.towerName;
         }
+
+        if (pressedTower != null)
+        {
+            pressedTower.active = false;
+            pressedTower.glow.SetActive(false);
+            pressedTower.circle.color = new Color(1f, 1f, 1f, 0f);
+        }
     }
 
     public void HideConstrZone()
@@ -134,6 +149,12 @@ public class GameController : MonoBehaviour
         }
         markers.RemoveRange(0, markers.Count);
         characteristicsMenu.SetActive(false);
+
+        GameObject[] towerButtons = GameObject.FindGameObjectsWithTag("TowerButton");
+        foreach (GameObject button in towerButtons)
+        {
+            button.GetComponent<TowerButton>().SetTransparent();
+        }
     }
 
     public void SellTower()

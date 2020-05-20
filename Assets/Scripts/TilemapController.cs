@@ -1,22 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Tilemaps;
+﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class TilemapController : MonoBehaviour
+public class TilemapController : MonoBehaviour, IPointerClickHandler
 {
+    public delegate void EmptyClick();
+    public event EmptyClick Click;
 
-    private Tilemap map;
-
-    void Start()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        map = GetComponent<Tilemap>();
-        //Debug.Log(map.tileAnchor);
+        Debug.Log("Клик по земле");
+        Click?.Invoke();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
