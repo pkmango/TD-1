@@ -52,6 +52,9 @@ public class GameController : MonoBehaviour
     private float fixWidth = 9f; // Фиксированная ширина поля
     private List<GameObject> markers = new List<GameObject>();
     private TilemapController ground; // Земля
+    private int currentWave = 0;
+    private bool next = false;
+    private Coroutine spawnWaveCor;
 
     void Awake()
     {
@@ -77,20 +80,50 @@ public class GameController : MonoBehaviour
         }
     }
 
-    IEnumerator SpawnWaves()
+    IEnumerator SpawnWaves(float wait)
     {
-        yield return new WaitForSeconds(startWait);
+        yield return new WaitForSeconds(wait);
 
-        for (int i = 0; i < waves.Length; i++)
+        for (int i = currentWave; i < waves.Length; i++)
         {
-            for (int j = 0; j < waves[i].enemies.Length; j++)
-            {
-                Instantiate(waves[i].enemies[j], spawnPoint.transform.position, Quaternion.identity);
+            currentWave = i;
 
-                yield return new WaitForSeconds(spawnWait);
-            }
+            StartCoroutine(SpawnEnemies(i));
+
+            //for (int j = 0; j < waves[i].enemies.Length; j++)
+            //{
+            //    Instantiate(waves[i].enemies[j], spawnPoint.transform.position, Quaternion.identity);
+
+            //    yield return new WaitForSeconds(spawnWait);
+            //}
+
+            //if (next)
+            //{
+            //    next = false;
+            //    yield break;
+            //}
 
             yield return new WaitForSeconds(waveWait);
+        }
+    }
+
+    IEnumerator SpawnEnemies(int i)
+    {
+        for (int j = 0; j < waves[i].enemies.Length; j++)
+        {
+            Instantiate(waves[i].enemies[j], spawnPoint.transform.position, Quaternion.identity);
+
+            yield return new WaitForSeconds(spawnWait);
+        }
+    }
+
+    public void Next()
+    {
+        if(currentWave + 1 < waves.Length)
+        {
+            StopCoroutine(spawnWaveCor);
+            currentWave++;
+            spawnWaveCor = StartCoroutine(SpawnWaves(0f));
         }
     }
 
@@ -128,7 +161,7 @@ public class GameController : MonoBehaviour
             TowerController tower = towersObject.GetComponent<Towers>().selectedTower.GetComponent<TowerController>();
             costText.text = tower.costs[0].ToString();
             damageText.text = tower.damages[0].ToString();
-            rangeText.text = tower.ranges[0].ToString();
+            rangeText.text = (tower.ranges[0] - 0.5f).ToString();
             fireRateText.text = tower.fireRates[0].ToString();
             towerNameText.text = tower.towerName;
         }
@@ -184,7 +217,7 @@ public class GameController : MonoBehaviour
     public void Started()
     {
         startButton.SetActive(false);
-        StartCoroutine(SpawnWaves());
+        spawnWaveCor = StartCoroutine(SpawnWaves(startWait));
     }
 
     public void GameOver()

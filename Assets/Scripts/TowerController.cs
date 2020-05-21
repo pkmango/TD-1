@@ -147,7 +147,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     private void UpdateUpgradeMenu()
     {
         gameController.damageTextUp.text = currentDamage.ToString();
-        gameController.rangeTextUp.text = currentRange.ToString();
+        gameController.rangeTextUp.text = (currentRange - 0.5f).ToString();
         gameController.fireRateTextUp.text = currentFireRate.ToString();
         if (level != maxLevel)
         {
@@ -161,7 +161,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
             if (currentRange != ranges[level + 1])
             {
-                gameController.rangeTextUp.text += " (" + ranges[level + 1].ToString() + ")";
+                gameController.rangeTextUp.text += " (" + (ranges[level + 1] - 0.5).ToString() + ")";
             }
 
             if (currentFireRate != fireRates[level + 1])
