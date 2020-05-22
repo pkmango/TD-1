@@ -4,7 +4,11 @@ public class BulletController : MonoBehaviour
 {
     public float speed;
     public Transform targetPosition;
-    public int damage;
+    public GameObject explosion;
+    public bool rocket; // Это ракета?
+    public float splash = 1.5f; // Слеш-радиус для ракеты
+    [HideInInspector]
+    public int damage; // Урон назначается пушкой при выстреле
 
     private Vector2 startPosition;
     private Vector2 endPosition;
@@ -29,7 +33,16 @@ public class BulletController : MonoBehaviour
         }
 
         distance = endPosition - startPosition;
-        transform.position = Vector2.Lerp(startPosition, endPosition, t);
+
+        if (rocket)
+        {
+            transform.position = Vector2.Lerp(startPosition, endPosition, t * t);
+        }
+        else
+        {
+            transform.position = Vector2.Lerp(startPosition, endPosition, t);
+        }
+            
 
         if (t < 1f)
         {
@@ -37,9 +50,25 @@ public class BulletController : MonoBehaviour
         }
         else
         {
-            if (targetPosition != null)
+            if (rocket)
             {
-                targetPosition.gameObject.GetComponent<EnemyController>().Health(damage);
+                Collider2D[] splashedEnemies = Physics2D.OverlapCircleAll(transform.position, splash, LayerMask.GetMask("Enemy"));
+                foreach (Collider2D i in splashedEnemies)
+                {
+                    i.GetComponent<EnemyController>().Health(damage);
+                }
+            }
+            else
+            {
+                if (targetPosition != null)
+                {
+                    targetPosition.gameObject.GetComponent<EnemyController>().Health(damage);
+                }
+            }
+
+            if (explosion != null)
+            {
+                Instantiate(explosion, transform.position, Quaternion.identity);
             }
             
             Destroy(gameObject);

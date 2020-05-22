@@ -135,6 +135,7 @@ public class EnemyController : MonoBehaviour
         redBar.transform.parent = healthBar.transform;
         Sprite healthBarSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 4f, 4f), new Vector2(0f, 0.5f));
         float leftBounds = -gameObject.GetComponent<SpriteRenderer>().bounds.extents.x; // Левая граница необходимая для выравнивания healthBar по левому краю
+
         // Красная полоска
         SpriteRenderer healthBarRedSR = redBar.AddComponent<SpriteRenderer>() as SpriteRenderer;
         healthBarRedSR.sortingOrder = 1;
@@ -142,12 +143,27 @@ public class EnemyController : MonoBehaviour
         healthBarRedSR.color = Color.red;
         redBar.transform.localScale = new Vector3(barLenght, 1f, 1f);
         redBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
+
         // Зеленая полоска
         SpriteRenderer healthBarGreenSR = greenBar.AddComponent<SpriteRenderer>() as SpriteRenderer;
         healthBarGreenSR.sortingOrder = 2;
         healthBarGreenSR.sprite = healthBarSprite;
         healthBarGreenSR.color = Color.green;
+
+        //if(splash != 0f)
+        //{
+        //    Collider2D[] splashedEnemies = Physics2D.OverlapCircleAll(transform.position, splash, LayerMask.GetMask("Enemy"));
+        //    foreach(Collider2D i in splashedEnemies)
+        //    {
+        //        i.GetComponent<EnemyController>().Health(dmg);
+        //    }
+        //}
+        //else
+        //{
+        //    currentHp -= dmg;
+        //}
         currentHp -= dmg;
+
         if (currentHp <= 0)
         {
             Instantiate(explosion_vfx, transform.position, Quaternion.identity);

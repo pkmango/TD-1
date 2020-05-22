@@ -53,7 +53,7 @@ public class GameController : MonoBehaviour
     private List<GameObject> markers = new List<GameObject>();
     private TilemapController ground; // Земля
     private int currentWave = 0;
-    private bool next = false;
+    //private bool next = false;
     private Coroutine spawnWaveCor;
 
     void Awake()

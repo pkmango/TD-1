@@ -60,4 +60,13 @@ public class Towers : MonoBehaviour
             selectedTower = towers[i];
         }
     }
+
+    public void Tower_6()
+    {
+        int i = 6;
+        if (towers.Length > i)
+        {
+            selectedTower = towers[i];
+        }
+    }
 }

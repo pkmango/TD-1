@@ -28,11 +28,11 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
         {
             gameController = gameControllerObject.GetComponent<GameController>();
         }
-        GameObject towersObject = GameObject.FindWithTag("Towers");
-        if (towersObject != null)
-        {
-            tower = towersObject.GetComponent<Towers>().selectedTower;
-        }
+        //GameObject towersObject = GameObject.FindWithTag("Towers");
+        //if (towersObject != null)
+        //{
+        //    tower = towersObject.GetComponent<Towers>().selectedTower;
+        //}
         spawn = GameObject.FindWithTag("Spawn");
         target = GameObject.FindWithTag("Target");
         blocking = GameObject.FindWithTag("BlockingText").GetComponent<Text>();
@@ -43,6 +43,12 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
+        GameObject towersObject = GameObject.FindWithTag("Towers");
+        if (towersObject != null)
+        {
+            tower = towersObject.GetComponent<Towers>().selectedTower;
+        }
+
         if (constrAlowed && tower.GetComponent<TowerController>().currentCost <= gameController.currentMoney)
         {
             GameObject newTower = Instantiate(tower, transform.position, tower.transform.rotation);
