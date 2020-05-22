@@ -231,8 +231,9 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         //throw new System.NotImplementedException();
     }
 
-    private void OnDestroy()
+    public void DestroyThisTower()
     {
         ground.Click -= ResetSelection;
+        Destroy(gameObject);
     }
 }

@@ -198,7 +198,7 @@ public class GameController : MonoBehaviour
         moneyText.text = currentMoney.ToString();
         pressedTower.StopAllCoroutines();
         Destroy(pressedTower.upgradeProgress.gameObject);
-        Destroy(pressedTower.gameObject);
+        pressedTower.DestroyThisTower();
     }
 
     public void LevelUp()
