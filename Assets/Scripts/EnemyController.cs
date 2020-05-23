@@ -12,6 +12,16 @@ public class EnemyController : MonoBehaviour
     public float barPositionY = 0.33f; // Позиция по Y
     public GameObject explosion_vfx;
     public GameObject freezeEffect;
+    [SerializeField, Range(0, 1)]
+    public float freezeSpeed = 0.7f; // Процент от нормальной скорости при заморозке (от 0 до 1)
+    private float freezeMod = 1f; // Модификатор для скорости, при получении фриза становится = freezeSpeed
+    private Coroutine freezeCor;
+    public GameObject bashEffect;
+    [SerializeField, Range(0, 1)]
+    public float bashSpeed = 0.1f; // Процент от нормальной скорости при оглушении (от 0 до 1)
+    private float bashMod = 1f; // Модификатор для скорости, при получении баша становится = bashSpeed
+    private Coroutine bashCor;
+    public float debuffTime = 2f; // Длительность дебафа скорости
 
     private int currentHp;
     private Vector2 currentPosition;
@@ -23,12 +33,12 @@ public class EnemyController : MonoBehaviour
     private Vector2 nextPosition = Vector2.zero;
     private GameObject target;
     private bool changePath = false; // Нужна смена пути
-    private float basicSpeed; // Переменная чтобы хранить базовую скрость 
+    //private float basicSpeed; // Переменная чтобы хранить базовую скрость 
 
 
     void Start()
     {
-        basicSpeed = speed;
+        //basicSpeed = speed;
         currentHp = hp;
         healthBar = Health();
 
@@ -78,7 +88,7 @@ public class EnemyController : MonoBehaviour
 
         if(progress < 1f)
         {
-            progress += Time.deltaTime * speed;
+            progress += Time.deltaTime * speed * bashMod * freezeMod;
         }
         else
         {
@@ -125,7 +135,7 @@ public class EnemyController : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    public GameObject Health(int dmg = 0, bool slowdown = false)
+    public GameObject Health(int dmg = 0, bool freeze = false, bool bash = false)
     {
         if (dmg != 0)
         {
@@ -154,13 +164,6 @@ public class EnemyController : MonoBehaviour
         healthBarGreenSR.sprite = healthBarSprite;
         healthBarGreenSR.color = Color.green;
 
-        if (slowdown)
-        {
-            StopAllCoroutines();
-            speed = basicSpeed;
-            StartCoroutine(Freeze());
-        }
-            
         currentHp -= dmg;
 
         if (currentHp <= 0)
@@ -170,6 +173,19 @@ public class EnemyController : MonoBehaviour
             Destroy(gameObject);
             return null;
         }
+
+        if (freeze)
+        {
+            if (freezeCor != null) StopCoroutine(freezeCor);
+            freezeCor = StartCoroutine(Freeze());
+        }
+
+        if (bash)
+        {
+            if (bashCor != null) StopCoroutine(bashCor);
+            bashCor = StartCoroutine(Bash());
+        }
+
         float newGreenBarLenght = barLenght * currentHp / hp; // Вычисляем новую длину полоски здоровья при получении урона
         greenBar.transform.localScale = new Vector3(newGreenBarLenght, 1f, 1f);
         greenBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
@@ -180,10 +196,19 @@ public class EnemyController : MonoBehaviour
     private IEnumerator Freeze()
     {
         if(freezeEffect != null) freezeEffect.SetActive(true);
-        speed -= speed * 30f * 0.01f;
-        yield return new WaitForSeconds(2f);
+        freezeMod = freezeSpeed;
+        yield return new WaitForSeconds(debuffTime);
         if (freezeEffect != null) freezeEffect.SetActive(false);
-        speed = basicSpeed;
+        freezeMod = 1f;
+    }
+
+    private IEnumerator Bash()
+    {
+        if (bashEffect != null) bashEffect.SetActive(true);
+        bashMod = bashSpeed;
+        yield return new WaitForSeconds(debuffTime);
+        if (bashEffect != null) bashEffect.SetActive(false);
+        bashMod = 1f;
     }
 
     private void OnDestroy()

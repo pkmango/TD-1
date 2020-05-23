@@ -161,7 +161,10 @@ MonoBehaviour:
   spawnPoint: {fileID: 6335408186119493231}
   lockOnTarget: {fileID: 7470094177153075302}
   bullet: {fileID: 2526149134785684282, guid: b72c44fa942f7824793cd6a840a3bac6, type: 3}
-  towerName: Quick-Firing Tower
+  earthquake: 0
+  quakeEffect: {fileID: 0}
+  quakeDuration: 0.1
+  towerName: Rapid Tower
   level: 0
   maxLevel: 4
   costs: 0f0000000f0000001e0000003c00000096000000

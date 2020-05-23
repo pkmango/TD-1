@@ -113,14 +113,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da9acb8965708642afb7ef45ca55a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
-  hp: 40
+  speed: 1.2
+  hp: 500
   healthBar: {fileID: 0}
   barLenght: 17
   barPositionY: 0.38
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 8790954183309294625}
+  freezeSpeed: 0.67
+  bashEffect: {fileID: 0}
+  bashSpeed: 0.1
+  debuffTime: 2
 --- !u!58 &3388263026347276747
 CircleCollider2D:
   m_ObjectHideFlags: 0

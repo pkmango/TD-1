@@ -7,6 +7,9 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public Transform spawnPoint;
     public LockOnTarget lockOnTarget;
     public GameObject bullet;
+    public bool earthquake;
+    public GameObject quakeEffect;
+    public float quakeDuration = 0.1f;
     public string towerName;
 
     // Характеристики башни
@@ -45,7 +48,6 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         currentRange = ranges[level];
         currentFireRate = fireRates[level];
         turret.GetComponent<CircleCollider2D>().radius = currentRange;
-        //circle.color = new Color(1f, 1f, 1f, 1f);
         circle.gameObject.transform.localScale = new Vector2(currentRange, currentRange);
     }
 
@@ -63,10 +65,17 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             ground.Click += ResetSelection;
         }
 
-
         GameObject newProgress = Instantiate(progress.gameObject, gameController.upgradingMenu.gameObject.transform);
         upgradeProgress = newProgress.GetComponent<RectTransform>();
-        StartCoroutine(Fire());
+
+        if (earthquake)
+        {
+            StartCoroutine(FireEarthquake());
+        }
+        else
+        {
+            StartCoroutine(Fire());
+        }
     }
 
     IEnumerator Fire()
@@ -83,6 +92,44 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             yield return new WaitForSeconds(1f / currentFireRate);
         }
         
+    }
+
+    IEnumerator FireEarthquake()
+    {
+        float quakeWait; // Задержка для анимации эффекта срабатывания башни
+
+        while (true)
+        {
+            Collider2D[] splashedEnemies = Physics2D.OverlapCircleAll(transform.position, currentRange, LayerMask.GetMask("Enemy"));
+
+            if (splashedEnemies.Length > 0)
+            {
+                quakeWait = quakeDuration;
+
+                foreach (Collider2D i in splashedEnemies)
+                {
+                    // Вероятность оглушения 10%
+                    if (Random.value < 0.1f)
+                    {
+                        i.GetComponent<EnemyController>().Health(currentDamage, false, true);
+                    }
+                    else
+                    {
+                        i.GetComponent<EnemyController>().Health(currentDamage);
+                    }
+                    
+                }
+                quakeEffect.SetActive(true);
+                yield return new WaitForSeconds(quakeWait);
+                quakeEffect.SetActive(false);
+            }
+            else
+            {
+                quakeWait = 0f;
+            }
+            
+            yield return new WaitForSeconds(1f / currentFireRate - quakeWait);
+        }
     }
 
     public void Upgrade(GameObject upgradingMenu)

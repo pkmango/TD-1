@@ -8,6 +8,7 @@ public class BulletController : MonoBehaviour
     public bool rocket; // Это ракета?
     public float splash = 1.5f; // Слеш-радиус для ракеты
     public bool frost; // Пуля морозит?
+    //public float slowdown = 30f; // Процент замедления от заморозки
     [HideInInspector]
     public int damage; // Урон назначается пушкой при выстреле
 
