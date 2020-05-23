@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -10,6 +11,7 @@ public class EnemyController : MonoBehaviour
     public float barLenght = 15f; // Длина полоски healthBar
     public float barPositionY = 0.33f; // Позиция по Y
     public GameObject explosion_vfx;
+    public GameObject freezeEffect;
 
     private int currentHp;
     private Vector2 currentPosition;
@@ -21,10 +23,12 @@ public class EnemyController : MonoBehaviour
     private Vector2 nextPosition = Vector2.zero;
     private GameObject target;
     private bool changePath = false; // Нужна смена пути
+    private float basicSpeed; // Переменная чтобы хранить базовую скрость 
 
 
     void Start()
     {
+        basicSpeed = speed;
         currentHp = hp;
         healthBar = Health();
 
@@ -121,7 +125,7 @@ public class EnemyController : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    public GameObject Health(int dmg = 0)
+    public GameObject Health(int dmg = 0, bool slowdown = false)
     {
         if (dmg != 0)
         {
@@ -150,18 +154,13 @@ public class EnemyController : MonoBehaviour
         healthBarGreenSR.sprite = healthBarSprite;
         healthBarGreenSR.color = Color.green;
 
-        //if(splash != 0f)
-        //{
-        //    Collider2D[] splashedEnemies = Physics2D.OverlapCircleAll(transform.position, splash, LayerMask.GetMask("Enemy"));
-        //    foreach(Collider2D i in splashedEnemies)
-        //    {
-        //        i.GetComponent<EnemyController>().Health(dmg);
-        //    }
-        //}
-        //else
-        //{
-        //    currentHp -= dmg;
-        //}
+        if (slowdown)
+        {
+            StopAllCoroutines();
+            speed = basicSpeed;
+            StartCoroutine(Freeze());
+        }
+            
         currentHp -= dmg;
 
         if (currentHp <= 0)
@@ -176,6 +175,15 @@ public class EnemyController : MonoBehaviour
         greenBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
 
         return healthBar;
+    }
+
+    private IEnumerator Freeze()
+    {
+        if(freezeEffect != null) freezeEffect.SetActive(true);
+        speed -= speed * 30f * 0.01f;
+        yield return new WaitForSeconds(2f);
+        if (freezeEffect != null) freezeEffect.SetActive(false);
+        speed = basicSpeed;
     }
 
     private void OnDestroy()

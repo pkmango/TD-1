@@ -7,6 +7,7 @@ public class BulletController : MonoBehaviour
     public GameObject explosion;
     public bool rocket; // Это ракета?
     public float splash = 1.5f; // Слеш-радиус для ракеты
+    public bool frost; // Пуля морозит?
     [HideInInspector]
     public int damage; // Урон назначается пушкой при выстреле
 
@@ -23,7 +24,7 @@ public class BulletController : MonoBehaviour
         endPosition = Vector2.zero;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (targetPosition != null)
         {
@@ -74,7 +75,14 @@ public class BulletController : MonoBehaviour
             {
                 if (targetPosition != null)
                 {
-                    targetPosition.gameObject.GetComponent<EnemyController>().Health(damage);
+                    if (frost)
+                    {
+                        targetPosition.gameObject.GetComponent<EnemyController>().Health(damage, true);
+                    }
+                    else
+                    {
+                        targetPosition.gameObject.GetComponent<EnemyController>().Health(damage);
+                    }
                 }
             }
 
