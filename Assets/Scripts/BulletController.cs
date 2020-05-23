@@ -14,6 +14,8 @@ public class BulletController : MonoBehaviour
     private Vector2 endPosition;
     private float t; // Прогресс для Lerp
     private Vector2 distance; // Растояние между стартовой и конечной точкой
+    private Vector2 direction;
+    private Quaternion rotation;
 
     void Start()
     {
@@ -37,6 +39,11 @@ public class BulletController : MonoBehaviour
         if (rocket)
         {
             transform.position = Vector2.Lerp(startPosition, endPosition, t * t);
+
+            direction = endPosition - startPosition;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, t);
         }
         else
         {
@@ -57,6 +64,11 @@ public class BulletController : MonoBehaviour
                 {
                     i.GetComponent<EnemyController>().Health(damage);
                 }
+
+                var ps = GetComponentInChildren<ParticleSystem>();
+                var em = ps.emission;
+                em.enabled = false; // Отключаем дым
+                transform.DetachChildren(); // переносим объект на world space
             }
             else
             {
@@ -70,7 +82,7 @@ public class BulletController : MonoBehaviour
             {
                 Instantiate(explosion, transform.position, Quaternion.identity);
             }
-            
+
             Destroy(gameObject);
         }
     }

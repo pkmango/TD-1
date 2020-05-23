@@ -651,7 +651,7 @@ MonoBehaviour:
   turnSpeed: 15
   updateTime: 0.02
   currentTarget: {fileID: 0}
-  accuracy: 8
+  accuracy: 30
   targetDetected: 0
   targetLocked: 0
 --- !u!58 &4079045100523555432
