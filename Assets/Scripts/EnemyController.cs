@@ -123,7 +123,7 @@ public class EnemyController : MonoBehaviour
         
     }
 
-    void ChangePath()
+    void ChangePath(bool sell)
     {
         changePath = true;
     }

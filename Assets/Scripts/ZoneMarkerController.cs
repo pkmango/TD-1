@@ -66,7 +66,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
                     Blocking(newTower);
                     return;
                 }
-                gameController.AddingNewTower();
+                gameController.AddingNewTower(newTower);
                 gameController.currentMoney -= newTower.GetComponent<TowerController>().currentCost;
                 gameController.moneyText.text = gameController.currentMoney.ToString();
                 Destroy(gameObject);

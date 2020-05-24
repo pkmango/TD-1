@@ -18,7 +18,7 @@ public class GameController : MonoBehaviour
     public int constrZoneHeight; // Высота зоны строительства
     public GameObject constrZoneMarker;
     public LayerMask stopConstr;
-    public delegate void AddingTowers();
+    public delegate void AddingTowers(bool sell = false);
     public event AddingTowers NewTower; // Событие для установки новой башни
     public Text moneyText;
     public int startMoney;
@@ -45,6 +45,8 @@ public class GameController : MonoBehaviour
     public Text towerNameTextUp;
     public Text sellText;
     public TowerController pressedTower; // Башня на поле, на которую кликнул игрок
+
+    public GameObject lastTower; // Ссылка на последнюю установленную башню
 
     private float ratio; // Соотношение сторон
     private float currentHeight; // Текущая высота
@@ -127,8 +129,9 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void AddingNewTower()
+    public void AddingNewTower(GameObject tower)
     {
+        lastTower = tower;
         NewTower?.Invoke();
     }
 
@@ -192,7 +195,7 @@ public class GameController : MonoBehaviour
 
     public void SellTower()
     {
-        NewTower?.Invoke();
+        NewTower?.Invoke(true);
         upgradeMenu.SetActive(false);
         currentMoney += pressedTower.currentCost / 2;
         moneyText.text = currentMoney.ToString();
