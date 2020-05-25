@@ -50,3 +50,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Tower
+    uniqueID: 1162911181
+    locked: 0
+  - name: Enemy
+    uniqueID: 2058689271
+    locked: 0
+  - name: Bullet
+    uniqueID: 3769602395
+    locked: 0

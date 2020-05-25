@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public float spawnWait; // Пауза между спауном врагов
     public float waveWait; // Пауза между волнами
     public GameObject spawnPoint; // Точка спауна
+    public GameObject rewardText; // При уничтожении врага показывается текст с суммой награды
     public GameObject mainMenu;
     public GameObject startButton;
     public GameObject upgradeButton;
@@ -54,8 +55,7 @@ public class GameController : MonoBehaviour
     private float fixWidth = 9f; // Фиксированная ширина поля
     private List<GameObject> markers = new List<GameObject>();
     private TilemapController ground; // Земля
-    private int currentWave = 0;
-    //private bool next = false;
+    public int currentWave = 0;
     private Coroutine spawnWaveCor;
 
     void Awake()
@@ -91,19 +91,6 @@ public class GameController : MonoBehaviour
             currentWave = i;
 
             StartCoroutine(SpawnEnemies(i));
-
-            //for (int j = 0; j < waves[i].enemies.Length; j++)
-            //{
-            //    Instantiate(waves[i].enemies[j], spawnPoint.transform.position, Quaternion.identity);
-
-            //    yield return new WaitForSeconds(spawnWait);
-            //}
-
-            //if (next)
-            //{
-            //    next = false;
-            //    yield break;
-            //}
 
             yield return new WaitForSeconds(waveWait);
         }

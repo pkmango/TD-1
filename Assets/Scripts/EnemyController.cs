@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
     public float speed;
     public int hp; // health points
     [HideInInspector]
+    public int reward; // Сумма награды
+    [HideInInspector]
     public GameObject healthBar;
     public float barLenght = 15f; // Длина полоски healthBar
     public float barPositionY = 0.33f; // Позиция по Y
@@ -48,6 +50,8 @@ public class EnemyController : MonoBehaviour
         {
             gameController = gameControllerObject.GetComponent<GameController>();
             gameController.NewTower += ChangePath;
+            // Узнаем значение награды в настройках текущей волны
+            reward = gameController.waves[gameController.currentWave].reward;
         }
 
         transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
@@ -148,7 +152,6 @@ public class EnemyController : MonoBehaviour
         greenBar.transform.parent = healthBar.transform;
         redBar.transform.parent = healthBar.transform;
         Sprite healthBarSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 4f, 4f), new Vector2(0f, 0.5f));
-        float leftBounds = -gameObject.GetComponent<SpriteRenderer>().bounds.extents.x; // Левая граница необходимая для выравнивания healthBar по левому краю
 
         // Красная полоска
         SpriteRenderer healthBarRedSR = redBar.AddComponent<SpriteRenderer>() as SpriteRenderer;
@@ -156,6 +159,8 @@ public class EnemyController : MonoBehaviour
         healthBarRedSR.sprite = healthBarSprite;
         healthBarRedSR.color = Color.red;
         redBar.transform.localScale = new Vector3(barLenght, 1f, 1f);
+        // Левая граница необходимая для выравнивания healthBar
+        float leftBounds = -redBar.GetComponent<SpriteRenderer>().bounds.extents.x;
         redBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
 
         // Зеленая полоска
@@ -168,8 +173,16 @@ public class EnemyController : MonoBehaviour
 
         if (currentHp <= 0)
         {
-            Instantiate(explosion_vfx, transform.position, Quaternion.identity);
+            if(explosion_vfx != null) Instantiate(explosion_vfx, transform.position, Quaternion.identity);
+            if(gameController.rewardText != null)
+            {
+                GameObject rewardText = Instantiate(gameController.rewardText, transform.position, Quaternion.identity);
+                rewardText.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Text";
+                rewardText.GetComponentInChildren<TextMesh>().text = "+" + reward.ToString();
+            }
             gameController.NewTower -= ChangePath;
+            gameController.currentMoney += reward;
+            gameController.moneyText.text = gameController.currentMoney.ToString();
             Destroy(gameObject);
             return null;
         }
