@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     public int startMoney;
     public Text livesText;
     public int startLives = 20;
+    public float deviation = 0.1f;
     [HideInInspector]
     public int currentMoney, currentLives;
     // Меню с прогрессом, отоброжаемое когда башня апгрейдится
@@ -45,6 +46,7 @@ public class GameController : MonoBehaviour
     public Text fireRateTextUp;
     public Text towerNameTextUp;
     public Text sellText;
+    [HideInInspector]
     public TowerController pressedTower; // Башня на поле, на которую кликнул игрок
 
     public GameObject lastTower; // Ссылка на последнюю установленную башню
@@ -151,6 +153,7 @@ public class GameController : MonoBehaviour
             TowerController tower = towersObject.GetComponent<Towers>().selectedTower.GetComponent<TowerController>();
             costText.text = tower.costs[0].ToString();
             damageText.text = tower.damages[0].ToString();
+            if (tower.boost) damageText.text += "%"; // Для усиливающих башен вместо урона отображается процент усиления
             rangeText.text = (tower.ranges[0] - 0.5f).ToString();
             fireRateText.text = tower.fireRates[0].ToString();
             towerNameText.text = tower.towerName;

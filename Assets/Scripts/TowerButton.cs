@@ -8,16 +8,6 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler
     private Color transparent = new Color(1f, 1f, 1f, 0f);
     private TilemapController ground;
 
-    //private void Start()
-    //{
-    //    GameObject groundObject = GameObject.FindWithTag("Ground");
-    //    if (groundObject != null)
-    //    {
-    //        ground = groundObject.GetComponent<TilemapController>();
-    //        ground.Click += SetTransparent;
-    //    }
-    //}
-
     public void OnPointerClick(PointerEventData eventData)
     {
         GameObject[] towerButtons = GameObject.FindGameObjectsWithTag("TowerButton");

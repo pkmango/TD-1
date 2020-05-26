@@ -13,6 +13,7 @@ TagManager:
   - Tower
   - Ground
   - TowerButton
+  - AirEnemy
   layers:
   - Default
   - TransparentFX
@@ -58,4 +59,7 @@ TagManager:
     locked: 0
   - name: Bullet
     uniqueID: 3769602395
+    locked: 0
+  - name: Text
+    uniqueID: 3038428383
     locked: 0

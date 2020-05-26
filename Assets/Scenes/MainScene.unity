@@ -2442,27 +2442,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bff359a4c5c9ea44f9a0b566210bf07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reward: 1
+  hp: 100
   enemies:
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
-  - {fileID: 7553748591484856119, guid: 4c32dd2e68c4f7a459a92d10701a55a3, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
+  - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
 --- !u!1 &436163441
 GameObject:
   m_ObjectHideFlags: 0
@@ -10874,6 +10876,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bff359a4c5c9ea44f9a0b566210bf07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reward: 3
+  hp: 400
   enemies:
   - {fileID: 3388263026347276758, guid: 1bb549e49ae112f4197a3a8fc7709ab6, type: 3}
   - {fileID: 3388263026347276758, guid: 1bb549e49ae112f4197a3a8fc7709ab6, type: 3}
@@ -11654,6 +11658,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bff359a4c5c9ea44f9a0b566210bf07f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  reward: 2
+  hp: 300
   enemies:
   - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
   - {fileID: 8859366277614284638, guid: 4c1eb3214c5519d48ba5f2dcbbcc08ed, type: 3}
@@ -11749,6 +11755,8 @@ MonoBehaviour:
   spawnWait: 1.5
   waveWait: 30
   spawnPoint: {fileID: 1838248777}
+  rewardText: {fileID: 5199466788706530427, guid: 7a697baa090dec447aa2a3b64172ae19,
+    type: 3}
   mainMenu: {fileID: 1865594121}
   startButton: {fileID: 1435630109}
   upgradeButton: {fileID: 1848125565}
@@ -11764,6 +11772,7 @@ MonoBehaviour:
   startMoney: 6000
   livesText: {fileID: 638181986}
   startLives: 20
+  deviation: 0.1
   currentMoney: 0
   currentLives: 0
   upgradingMenu: {fileID: 1098680130}
@@ -11783,6 +11792,7 @@ MonoBehaviour:
   sellText: {fileID: 344813980}
   pressedTower: {fileID: 0}
   lastTower: {fileID: 0}
+  currentWave: 0
 --- !u!1 &1838248777
 GameObject:
   m_ObjectHideFlags: 0

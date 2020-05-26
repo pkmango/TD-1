@@ -6,6 +6,7 @@ public class EnemyController : MonoBehaviour
 {
     public float speed;
     public int hp; // health points
+    public bool air;
     [HideInInspector]
     public int reward; // Сумма награды
     [HideInInspector]
@@ -34,25 +35,28 @@ public class EnemyController : MonoBehaviour
     private GameController gameController;
     private Vector2 nextPosition = Vector2.zero;
     private GameObject target;
-    private bool changePath = false; // Нужна смена пути
-    //private float basicSpeed; // Переменная чтобы хранить базовую скрость 
-
+    private bool changePath = false; // Нужна смена пути 
+    private Vector2 deviationVector; // Можно задать случайное отклонение от заданное траектории движения 
 
     void Start()
     {
-        //basicSpeed = speed;
-        currentHp = hp;
-        healthBar = Health();
-
         target = GameObject.FindWithTag("Target");
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
         if (gameControllerObject != null)
         {
             gameController = gameControllerObject.GetComponent<GameController>();
             gameController.NewTower += ChangePath;
-            // Узнаем значение награды в настройках текущей волны
-            reward = gameController.waves[gameController.currentWave].reward;
+            // Узнаем значение награды и hp в настройках текущей волны
+            Wave currentWave = gameController.waves[gameController.currentWave];
+            reward = currentWave.reward;
+            hp = currentWave.hp;
+            // Узнаем значения отклонения
+            float deviation = gameController.deviation;
+            deviationVector = new Vector2(Random.Range(-deviation, deviation), Random.Range(-deviation, deviation));
         }
+
+        currentHp = hp;
+        healthBar = Health();
 
         transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
@@ -69,6 +73,13 @@ public class EnemyController : MonoBehaviour
     void NewPath()
     {
         wayPoints = gameObject.GetComponent<PathFinder>().GetPath(currentPosition, target.transform.position);
+
+        // Применяем значение отклонения
+        for (int i = 0; i < wayPoints.Count; i++)
+        {
+            wayPoints[i] += deviationVector;
+        }
+
         if (wayPoints.Count != 0)
         {
             currentPoint = wayPoints.Count - 1;

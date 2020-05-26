@@ -11,9 +11,9 @@ public class LockOnTarget : MonoBehaviour
     public float accuracy = 7f; // Точность наведения (0 = абсолютная)
     public bool targetDetected; // Цель обнаружена?
     public bool targetLocked; // Цель захвачена?
+    public string enemyTag; // Тип врага Enemy или AirEnemy
 
     private Vector3 direction;
-    //private Transform enemy;
     private Quaternion rotation;
     private List<Transform> enemies =  new List<Transform>();
     
@@ -21,7 +21,6 @@ public class LockOnTarget : MonoBehaviour
 
     void Start()
     {
-        //Debug.Log(transform.position);
         targetDetected = false;
         targetLocked = false;
         defoultRotation = transform.rotation;
@@ -29,7 +28,7 @@ public class LockOnTarget : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.CompareTag("Enemy"))
+        if (col.CompareTag(enemyTag))
         {            
             enemies.Add(col.gameObject.GetComponent<Transform>());
 
@@ -44,7 +43,7 @@ public class LockOnTarget : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.CompareTag("Enemy"))
+        if (col.CompareTag(enemyTag))
         {
             enemies.Remove(col.gameObject.GetComponent<Transform>());
         }

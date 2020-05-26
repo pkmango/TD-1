@@ -742,6 +742,7 @@ MonoBehaviour:
   accuracy: 7
   targetDetected: 0
   targetLocked: 0
+  enemyTag: Enemy
 --- !u!58 &3316457019641955607
 CircleCollider2D:
   m_ObjectHideFlags: 0
