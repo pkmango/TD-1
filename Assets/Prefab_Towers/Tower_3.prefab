@@ -179,7 +179,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812607776aef899439e4a9225f2b60d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 8512249716123937404}
+  spawnPoints:
+  - {fileID: 8512249716123937404}
   lockOnTarget: {fileID: 5071450357449749621}
   bullet: {fileID: 7210003527007911473, guid: 8944a55d97a045444bfdc778dd7f7696, type: 3}
   boost: 0
@@ -743,6 +744,7 @@ MonoBehaviour:
   targetDetected: 0
   targetLocked: 0
   enemyTag: Enemy
+  anyEnemy: 1
 --- !u!58 &1138318062162917636
 CircleCollider2D:
   m_ObjectHideFlags: 0

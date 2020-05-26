@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
-    public Transform spawnPoint;
+    public Transform[] spawnPoints;
     public LockOnTarget lockOnTarget;
     public GameObject bullet;
     public bool boost; //Башня типа boost?
@@ -109,9 +109,14 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         {
             if (lockOnTarget.targetLocked)
             {
-                GameObject newBullet = Instantiate(bullet, spawnPoint.position, spawnPoint.rotation);
-                newBullet.GetComponent<BulletController>().targetPosition = lockOnTarget.currentTarget;
-                newBullet.GetComponent<BulletController>().damage = currentDamage;
+                foreach(Transform i in spawnPoints)
+                {
+                    GameObject newBullet = Instantiate(bullet, i.position, i.rotation);
+                    newBullet.GetComponent<BulletController>().targetPosition = lockOnTarget.currentTarget;
+                    newBullet.GetComponent<BulletController>().damage = currentDamage;
+                    if (spawnPoints.Length > 1) yield return new WaitForSeconds(0.2f);
+                }
+                
             }
 
             yield return new WaitForSeconds(1f / currentFireRate);
@@ -126,34 +131,54 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         while (true)
         {
             Collider2D[] splashedEnemies = Physics2D.OverlapCircleAll(transform.position, currentRange, LayerMask.GetMask("Enemy"));
-
+            
             if (splashedEnemies.Length > 0)
             {
-                quakeWait = quakeDuration;
+                bool notOnlyAir = false;
 
+                // Проверяем есть ли хоть один наземный враг
                 foreach (Collider2D i in splashedEnemies)
                 {
-                    // Вероятность оглушения 10%
-                    if (Random.value < 0.1f)
+                    if (i.CompareTag("Enemy"))
                     {
-                        i.GetComponent<EnemyController>().Health(currentDamage, false, true);
+                        notOnlyAir = true;
+                        break;
                     }
-                    else
-                    {
-                        i.GetComponent<EnemyController>().Health(currentDamage);
-                    }
-                    
                 }
-                quakeEffect.SetActive(true);
-                yield return new WaitForSeconds(quakeWait);
-                quakeEffect.SetActive(false);
-            }
-            else
-            {
-                quakeWait = 0f;
+
+                // Если есть хоть один наземный враг, то мы включаем башню
+                if (notOnlyAir)
+                {
+                    quakeWait = quakeDuration;
+
+                    foreach (Collider2D i in splashedEnemies)
+                    {
+                        if (i.tag == "AirEnemy") continue;
+
+                        // Вероятность оглушения 10%
+                        if (Random.value < 0.1f)
+                        {
+                            i.GetComponent<EnemyController>().Health(currentDamage, false, true);
+                        }
+                        else
+                        {
+                            i.GetComponent<EnemyController>().Health(currentDamage);
+                        }
+
+                    }
+                    quakeEffect.SetActive(true);
+                    yield return new WaitForSeconds(quakeWait);
+                    quakeEffect.SetActive(false);
+                }
+                else
+                {
+                    quakeWait = 0f;
+                }
+                yield return new WaitForSeconds(1f / currentFireRate - quakeWait);
+                continue;
             }
             
-            yield return new WaitForSeconds(1f / currentFireRate - quakeWait);
+            yield return new WaitForSeconds(1f / currentFireRate);
         }
     }
 

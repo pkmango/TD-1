@@ -402,7 +402,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812607776aef899439e4a9225f2b60d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 4716999250030631184}
+  spawnPoints:
+  - {fileID: 4716999250030631184}
   lockOnTarget: {fileID: 8157948490177136409}
   bullet: {fileID: 6573657466832044666, guid: c9418d149d2afa54c81ffdb0e3c2aa60, type: 3}
   boost: 0

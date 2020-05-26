@@ -134,6 +134,7 @@ MonoBehaviour:
   targetDetected: 0
   targetLocked: 0
   enemyTag: Enemy
+  anyEnemy: 1
 --- !u!58 &7452489297731848571
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -390,7 +391,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812607776aef899439e4a9225f2b60d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 2198046559653337603}
+  spawnPoints:
+  - {fileID: 2198046559653337603}
   lockOnTarget: {fileID: 3369247284494943242}
   bullet: {fileID: 131003257551420200, guid: c739959d1874e4244b48235463f735dd, type: 3}
   boost: 0

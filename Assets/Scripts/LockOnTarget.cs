@@ -12,11 +12,12 @@ public class LockOnTarget : MonoBehaviour
     public bool targetDetected; // Цель обнаружена?
     public bool targetLocked; // Цель захвачена?
     public string enemyTag; // Тип врага Enemy или AirEnemy
+    public bool anyEnemy; // Если true - башня может атаковать любого врага
 
     private Vector3 direction;
     private Quaternion rotation;
     private List<Transform> enemies =  new List<Transform>();
-    
+
     private Quaternion defoultRotation;
 
     void Start()
@@ -28,7 +29,7 @@ public class LockOnTarget : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.CompareTag(enemyTag))
+        if (CheckObject(col))
         {            
             enemies.Add(col.gameObject.GetComponent<Transform>());
 
@@ -43,10 +44,27 @@ public class LockOnTarget : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D col)
     {
-        if (col.CompareTag(enemyTag))
+        if (CheckObject(col))
         {
             enemies.Remove(col.gameObject.GetComponent<Transform>());
         }
+    }
+
+    // Проверяем что за объект и нужно ли его атаковать, если нужно возвращается true
+    private bool CheckObject(Collider2D col)
+    {
+        bool trackedObject = false;
+
+        if (anyEnemy)
+        {
+            if (col.CompareTag("Enemy") || col.CompareTag("AirEnemy")) trackedObject = true;
+        }
+        else
+        {
+            if (col.CompareTag(enemyTag)) trackedObject = true;
+        }
+
+        return trackedObject;
     }
 
     IEnumerator TargetTracking(Transform enemy)

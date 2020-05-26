@@ -25,7 +25,8 @@ public class GameController : MonoBehaviour
     public int startMoney;
     public Text livesText;
     public int startLives = 20;
-    public float deviation = 0.1f;
+    public float deviation = 0.1f; // Предел случайного отклонения
+    public int randomSpawn = 3; // Координата спауна меняется в этих пределах случайным образом
     [HideInInspector]
     public int currentMoney, currentLives;
     // Меню с прогрессом, отоброжаемое когда башня апгрейдится
@@ -102,7 +103,8 @@ public class GameController : MonoBehaviour
     {
         for (int j = 0; j < waves[i].enemies.Length; j++)
         {
-            Instantiate(waves[i].enemies[j], spawnPoint.transform.position, Quaternion.identity);
+            Vector3 randomSpawnPosition = spawnPoint.transform.position + new Vector3(Random.Range(-randomSpawn, randomSpawn), 0f, 0f);
+            Instantiate(waves[i].enemies[j], randomSpawnPosition, Quaternion.identity);
 
             yield return new WaitForSeconds(spawnWait);
         }
@@ -122,6 +124,16 @@ public class GameController : MonoBehaviour
     {
         lastTower = tower;
         NewTower?.Invoke();
+    }
+
+    public void SubtractLife()
+    {
+        currentLives--;
+        livesText.text = currentLives.ToString();
+        if (currentLives <= 0)
+        {
+            GameOver();
+        }
     }
 
     public void ShowConstrZone()

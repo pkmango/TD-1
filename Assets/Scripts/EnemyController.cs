@@ -45,7 +45,7 @@ public class EnemyController : MonoBehaviour
         if (gameControllerObject != null)
         {
             gameController = gameControllerObject.GetComponent<GameController>();
-            gameController.NewTower += ChangePath;
+            if(!air) gameController.NewTower += ChangePath;
             // Узнаем значение награды и hp в настройках текущей волны
             Wave currentWave = gameController.waves[gameController.currentWave];
             reward = currentWave.reward;
@@ -60,14 +60,50 @@ public class EnemyController : MonoBehaviour
 
         transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
-        NewPath();
-        nextPosition = wayPoints[currentPoint];
+        if (!air)
+        {
+            NewPath();
+            nextPosition = wayPoints[currentPoint];
+        }
+        else
+        {
+            currentPosition += deviationVector;
+            nextPosition = new Vector2 (currentPosition.x, target.transform.position.y + deviationVector.y);
+            //nextPosition += deviationVector;
+        }
+        
     }
 
     void FixedUpdate()
     {
         healthBar.transform.position = transform.position;
-        Movement();
+        if (!air)
+        {
+            Movement();
+        }
+        else
+        {
+            transform.rotation = Quaternion.AngleAxis(-90f, Vector3.forward);
+            MovementForAir();
+        }
+        
+        
+    }
+
+    void MovementForAir()
+    {
+        transform.position = Vector2.Lerp(currentPosition, nextPosition, progress);
+
+        if (progress < 1f)
+        {
+            Vector2 distance = nextPosition - currentPosition;
+            progress += 1 / (distance.magnitude / (speed * Time.deltaTime)) * freezeMod;
+        }
+        else
+        {
+            gameController.SubtractLife();
+            Destroy(gameObject);
+        }
     }
 
     void NewPath()
@@ -110,12 +146,7 @@ public class EnemyController : MonoBehaviour
             if(currentPoint == 0)
             {
                 gameController.NewTower -= ChangePath;
-                gameController.currentLives--;
-                gameController.livesText.text = gameController.currentLives.ToString();
-                if (gameController.currentLives <= 0)
-                {
-                    gameController.GameOver();
-                }
+                gameController.SubtractLife();
                 Destroy(gameObject);
                 return;
             }
@@ -166,7 +197,8 @@ public class EnemyController : MonoBehaviour
 
         // Красная полоска
         SpriteRenderer healthBarRedSR = redBar.AddComponent<SpriteRenderer>() as SpriteRenderer;
-        healthBarRedSR.sortingOrder = 1;
+        healthBarRedSR.sortingLayerName = "Enemy";
+        healthBarRedSR.sortingOrder = 4;
         healthBarRedSR.sprite = healthBarSprite;
         healthBarRedSR.color = Color.red;
         redBar.transform.localScale = new Vector3(barLenght, 1f, 1f);
@@ -176,7 +208,8 @@ public class EnemyController : MonoBehaviour
 
         // Зеленая полоска
         SpriteRenderer healthBarGreenSR = greenBar.AddComponent<SpriteRenderer>() as SpriteRenderer;
-        healthBarGreenSR.sortingOrder = 2;
+        healthBarGreenSR.sortingLayerName = "Enemy";
+        healthBarGreenSR.sortingOrder = 5;
         healthBarGreenSR.sprite = healthBarSprite;
         healthBarGreenSR.color = Color.green;
 
