@@ -391,7 +391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 812607776aef899439e4a9225f2b60d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoint: {fileID: 4600098932814438302}
+  spawnPoints: []
   lockOnTarget: {fileID: 0}
   bullet: {fileID: 131003257551420200, guid: c739959d1874e4244b48235463f735dd, type: 3}
   boost: 0
@@ -402,7 +402,7 @@ MonoBehaviour:
   level: 0
   maxLevel: 4
   costs: 6400000064000000c80000009001000020030000
-  damages: 3c00000078000000f0000000e0010000c0030000
+  damages: 1400000078000000f0000000e0010000c0030000
   ranges:
   - 1.5
   - 1.5

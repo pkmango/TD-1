@@ -6,9 +6,11 @@ public class EnemyController : MonoBehaviour
 {
     public float speed;
     public int hp; // health points
+    public GameObject passengers; // Враги которые дополнительно спавнятся после уничтожения 
+    public bool passenger; // Это пассажир?
     public bool air;
     [HideInInspector]
-    public int reward; // Сумма награды
+    public int reward = 1; // Сумма награды
     [HideInInspector]
     public GameObject healthBar;
     public float barLenght = 15f; // Длина полоски healthBar
@@ -36,7 +38,8 @@ public class EnemyController : MonoBehaviour
     private Vector2 nextPosition = Vector2.zero;
     private GameObject target;
     private bool changePath = false; // Нужна смена пути 
-    private Vector2 deviationVector; // Можно задать случайное отклонение от заданное траектории движения 
+    [HideInInspector]
+    public Vector2 deviationVector; // Можно задать случайное отклонение от заданное траектории движения 
 
     void Start()
     {
@@ -50,20 +53,26 @@ public class EnemyController : MonoBehaviour
             Wave currentWave = gameController.waves[gameController.currentWave];
             reward = currentWave.reward;
             hp = currentWave.hp;
+            if (passenger) hp /= 2;
             // Узнаем значения отклонения
-            float deviation = gameController.deviation;
-            deviationVector = new Vector2(Random.Range(-deviation, deviation), Random.Range(-deviation, deviation));
+            if (deviationVector == Vector2.zero)
+            {
+                float deviation = gameController.deviation;
+                deviationVector = new Vector2(Random.Range(-deviation, deviation), Random.Range(-deviation, deviation));
+            }
+            
         }
 
         currentHp = hp;
         healthBar = Health();
 
-        transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
+        //transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
         if (!air)
         {
             NewPath();
             nextPosition = wayPoints[currentPoint];
+            ChangeRotation();
         }
         else
         {
@@ -102,7 +111,7 @@ public class EnemyController : MonoBehaviour
         else
         {
             gameController.SubtractLife();
-            Destroy(gameObject);
+            DestroyObject();
         }
     }
 
@@ -124,7 +133,7 @@ public class EnemyController : MonoBehaviour
         {
             Debug.Log("Блокировка пути!");
             gameController.NewTower -= ChangePath;
-            Destroy(gameObject);
+            DestroyObject();
         }
         //Debug.Log("Событие!");
     }
@@ -139,7 +148,9 @@ public class EnemyController : MonoBehaviour
 
         if(progress < 1f)
         {
-            progress += Time.deltaTime * speed * bashMod * freezeMod;
+            Vector2 distance = nextPosition - currentPosition;
+            progress += 1 / (distance.magnitude / (speed * Time.deltaTime)) * freezeMod * bashMod;
+            Debug.Log(progress);
         }
         else
         {
@@ -147,7 +158,7 @@ public class EnemyController : MonoBehaviour
             {
                 gameController.NewTower -= ChangePath;
                 gameController.SubtractLife();
-                Destroy(gameObject);
+                DestroyObject();
                 return;
             }
             progress = 0f;
@@ -218,7 +229,7 @@ public class EnemyController : MonoBehaviour
         if (currentHp <= 0)
         {
             if(explosion_vfx != null) Instantiate(explosion_vfx, transform.position, Quaternion.identity);
-            if(gameController.rewardText != null)
+            if(gameController.rewardText != null && !passenger)
             {
                 GameObject rewardText = Instantiate(gameController.rewardText, transform.position, Quaternion.identity);
                 rewardText.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Text";
@@ -227,7 +238,7 @@ public class EnemyController : MonoBehaviour
             gameController.NewTower -= ChangePath;
             gameController.currentMoney += reward;
             gameController.moneyText.text = gameController.currentMoney.ToString();
-            Destroy(gameObject);
+            DestroyObject();
             return null;
         }
 
@@ -268,11 +279,24 @@ public class EnemyController : MonoBehaviour
         bashMod = 1f;
     }
 
+    public void DestroyObject()
+    {
+        if (passengers != null && currentPoint > 0)
+        {
+            for(int i = 0; i < 3; i++)
+            {
+                Vector3 randomPosition = new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0f);
+                GameObject newEnemy = Instantiate(passengers, transform.position + randomPosition, transform.rotation);
+                newEnemy.GetComponent<EnemyController>().deviationVector = randomPosition;
+            }
+        }
+        Destroy(gameObject);
+    }
     private void OnDestroy()
     {
-
-        if(healthBar != null)
+        if (healthBar != null)
         {
+            Debug.Log("это работает");
             Destroy(healthBar);
         }
     }
