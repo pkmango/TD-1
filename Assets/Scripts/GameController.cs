@@ -21,10 +21,18 @@ public class GameController : MonoBehaviour
     public LayerMask stopConstr;
     public delegate void AddingTowers(bool sell = false);
     public event AddingTowers NewTower; // Событие для установки новой башни
+    public delegate void ChangeCurrentMoney();
+    public event ChangeCurrentMoney NewCurrentMoney; // Событие для изменение текущих денег
+    public GameObject enemyTiles; // Канвас на который располагается очередь из плиток с обозначением слудющей волны
+    public int enemyTilesStep = 269; // Ширина шага в пикселях, через который размещены плитки enemyTiles
+    public Text clockText; // Текстовое поле для отображения времени до начала новой волны
     public Text moneyText;
     public int startMoney;
     public Text livesText;
     public int startLives = 20;
+    public Text waveNumberText;
+    public int score;
+    public Text scoreText;
     public float deviation = 0.1f; // Предел случайного отклонения
     public int randomSpawn = 3; // Координата спауна меняется в этих пределах случайным образом
     [HideInInspector]
@@ -32,6 +40,8 @@ public class GameController : MonoBehaviour
     // Меню с прогрессом, отоброжаемое когда башня апгрейдится
     public GameObject upgradingMenu;
     public RectTransform upgradeProgress;
+    public GameObject buffCanvas;
+    public Text buffValue;
     // Данные для меню с характеристиками tower
     public GameObject characteristicsMenu;
     public Text costText;
@@ -39,18 +49,25 @@ public class GameController : MonoBehaviour
     public Text rangeText;
     public Text fireRateText;
     public Text towerNameText;
+    public Text descriptionText;
+    public Image towerIcon;
     // Данные для меню апгрейда и продажи
     public GameObject upgradeMenu;
     public Text costTextUp;
     public Text damageTextUp;
     public Text rangeTextUp;
     public Text fireRateTextUp;
+    public Text costTextUpPlus;
+    public Text damageTextPlus;
+    public Text rangeTextPlus;
+    public Text fireRateTextPlus;
     public Text towerNameTextUp;
     public Text sellText;
     [HideInInspector]
     public TowerController pressedTower; // Башня на поле, на которую кликнул игрок
 
     public GameObject lastTower; // Ссылка на последнюю установленную башню
+    public TowerController selectedTower; // Выбранный через кнопку вид башен
 
     private float ratio; // Соотношение сторон
     private float currentHeight; // Текущая высота
@@ -60,6 +77,8 @@ public class GameController : MonoBehaviour
     private TilemapController ground; // Земля
     public int currentWave = 0;
     private Coroutine spawnWaveCor;
+    private float enemyTilesX; // Начальная позиция enemyTiles по оси х
+    private float waveStartTime; // Время когда стартовала текущая волна
 
     void Awake()
     {
@@ -68,20 +87,47 @@ public class GameController : MonoBehaviour
         currentHeight = fixWidth * ratio;
         ortSize = currentHeight / 2f;
         Camera.main.orthographicSize = ortSize;
+        currentMoney = startMoney;
     }
 
     private void Start()
     {
-        moneyText.text = startMoney.ToString();
-        currentMoney = startMoney;
+        moneyText.text = currentMoney.ToString();
+        //currentMoney = startMoney;
         livesText.text = startLives.ToString();
         currentLives = startLives;
+        waveNumberText.text = currentWave.ToString() +"/" + waves.Length.ToString();
 
         GameObject groundObject = GameObject.FindWithTag("Ground");
         if (groundObject != null)
         {
             ground = groundObject.GetComponent<TilemapController>();
             ground.Click += HideConstrZone;
+        }
+
+        CreateWaveIcons();
+    }
+
+    private void CreateWaveIcons()
+    {
+        enemyTilesX = enemyTiles.transform.localPosition.x;
+
+        for (int i = 0; i<waves.Length; i++)
+        {
+            GameObject icon = Instantiate(waves[i].waveTile, enemyTiles.transform);
+            icon.transform.localPosition = new Vector2(enemyTilesStep * i, 0f);
+        }
+    }
+
+    IEnumerator EnemyTilesMove()
+    {
+        while (true)
+        {
+            float deltaX = (enemyTilesStep / waveWait) * Time.fixedDeltaTime;
+            enemyTiles.transform.localPosition = new Vector2(enemyTiles.transform.localPosition.x - deltaX, enemyTiles.transform.localPosition.y);
+            // Таймер для отсчета времени до следующей волны
+            clockText.text = Mathf.Round(waveWait + waveStartTime - Time.time).ToString();
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -91,7 +137,9 @@ public class GameController : MonoBehaviour
 
         for (int i = currentWave; i < waves.Length; i++)
         {
+            waveStartTime = Time.time;
             currentWave = i;
+            waveNumberText.text = (currentWave + 1).ToString() + "/" + waves.Length.ToString();
 
             StartCoroutine(SpawnEnemies(i));
 
@@ -116,7 +164,10 @@ public class GameController : MonoBehaviour
         {
             StopCoroutine(spawnWaveCor);
             currentWave++;
+            waveNumberText.text = (currentWave + 1).ToString() + "/" + waves.Length.ToString();
             spawnWaveCor = StartCoroutine(SpawnWaves(0f));
+
+            enemyTiles.transform.localPosition = new Vector2(enemyTilesX - enemyTilesStep * currentWave, enemyTiles.transform.localPosition.y);
         }
     }
 
@@ -124,6 +175,13 @@ public class GameController : MonoBehaviour
     {
         lastTower = tower;
         NewTower?.Invoke();
+    }
+
+    public void ChangeMoney(int money)
+    {
+        currentMoney += money;
+        moneyText.text = currentMoney.ToString();
+        NewCurrentMoney?.Invoke();
     }
 
     public void SubtractLife()
@@ -157,19 +215,14 @@ public class GameController : MonoBehaviour
 
     public void SetCharacteristicsMenu()
     {
-        GameObject towersObject = GameObject.FindWithTag("Towers");
-        if (towersObject != null)
-        {
-            characteristicsMenu.SetActive(true);
-            upgradeMenu.SetActive(false);
-            TowerController tower = towersObject.GetComponent<Towers>().selectedTower.GetComponent<TowerController>();
-            costText.text = tower.costs[0].ToString();
-            damageText.text = tower.damages[0].ToString();
-            if (tower.boost) damageText.text += "%"; // Для усиливающих башен вместо урона отображается процент усиления
-            rangeText.text = (tower.ranges[0] - 0.5f).ToString();
-            fireRateText.text = tower.fireRates[0].ToString();
-            towerNameText.text = tower.towerName;
-        }
+        characteristicsMenu.SetActive(true);
+        upgradeMenu.SetActive(false);
+        costText.text = selectedTower.costs[0].ToString();
+        damageText.text = selectedTower.damages[0].ToString();
+        if (selectedTower.boost) damageText.text += "%"; // Для усиливающих башен вместо урона отображается процент усиления
+        rangeText.text = (selectedTower.ranges[0] - 0.5f).ToString();
+        fireRateText.text = selectedTower.fireRates[0].ToString();
+        towerNameText.text = selectedTower.towerName;
 
         if (pressedTower != null)
         {
@@ -181,11 +234,7 @@ public class GameController : MonoBehaviour
 
     public void HideConstrZone()
     {
-        foreach(GameObject i in markers)
-        {
-            Destroy(i);
-        }
-        markers.RemoveRange(0, markers.Count);
+        DestroyConstrMarkers();
         characteristicsMenu.SetActive(false);
 
         GameObject[] towerButtons = GameObject.FindGameObjectsWithTag("TowerButton");
@@ -195,12 +244,20 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void DestroyConstrMarkers()
+    {
+        foreach (GameObject i in markers)
+        {
+            Destroy(i);
+        }
+        markers.RemoveRange(0, markers.Count);
+    }
+
     public void SellTower()
     {
         NewTower?.Invoke(true);
         upgradeMenu.SetActive(false);
-        currentMoney += pressedTower.currentCost / 2;
-        moneyText.text = currentMoney.ToString();
+        ChangeMoney(pressedTower.currentCost / 2);
         pressedTower.StopAllCoroutines();
         Destroy(pressedTower.upgradeProgress.gameObject);
         pressedTower.DestroyThisTower();
@@ -210,7 +267,11 @@ public class GameController : MonoBehaviour
     {
         if(pressedTower.level != pressedTower.maxLevel)
         {
-            pressedTower.Upgrade(upgradingMenu);
+            if(pressedTower.costs[pressedTower.level + 1] <= currentMoney)
+            {
+                ChangeMoney(-pressedTower.costs[pressedTower.level + 1]);
+                pressedTower.Upgrade(upgradingMenu);
+            }
         }
     }
 
@@ -223,6 +284,8 @@ public class GameController : MonoBehaviour
     {
         startButton.SetActive(false);
         spawnWaveCor = StartCoroutine(SpawnWaves(startWait));
+
+        StartCoroutine(EnemyTilesMove());
     }
 
     public void GameOver()

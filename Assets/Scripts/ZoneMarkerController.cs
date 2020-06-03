@@ -28,11 +28,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
         {
             gameController = gameControllerObject.GetComponent<GameController>();
         }
-        //GameObject towersObject = GameObject.FindWithTag("Towers");
-        //if (towersObject != null)
-        //{
-        //    tower = towersObject.GetComponent<Towers>().selectedTower;
-        //}
+
         spawn = GameObject.FindWithTag("Spawn");
         target = GameObject.FindWithTag("Target");
         blocking = GameObject.FindWithTag("BlockingText").GetComponent<Text>();
@@ -43,13 +39,9 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerClick(PointerEventData pointerEventData)
     {
-        GameObject towersObject = GameObject.FindWithTag("Towers");
-        if (towersObject != null)
-        {
-            tower = towersObject.GetComponent<Towers>().selectedTower;
-        }
+        tower = gameController.selectedTower.gameObject;
 
-        if (constrAlowed && tower.GetComponent<TowerController>().currentCost <= gameController.currentMoney)
+        if (constrAlowed && tower.GetComponent<TowerController>().costs[0] <= gameController.currentMoney)
         {
             GameObject newTower = Instantiate(tower, transform.position, tower.transform.rotation);
             // Проверяем блокировку от старта до финиша
@@ -66,9 +58,8 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
                     Blocking(newTower);
                     return;
                 }
+                gameController.ChangeMoney(-newTower.GetComponent<TowerController>().currentCost);
                 gameController.AddingNewTower(newTower);
-                gameController.currentMoney -= newTower.GetComponent<TowerController>().currentCost;
-                gameController.moneyText.text = gameController.currentMoney.ToString();
                 Destroy(gameObject);
             }
         }
@@ -101,18 +92,21 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
             new Vector2(tower.transform.position.x - 1, tower.transform.position.y)
         };
         // Проверяем попала ли точка внутрь замкнутого кольца
-        foreach (Vector2 i in neighboringPoints)
+        for (int i = 0; i < neighboringPoints.Length; i++)
         {
-            wayPoints = gameObject.GetComponent<PathFinder>().GetPath(i, target.transform.position);
-            if (wayPoints.Count == 0)
+            if (!Physics2D.OverlapPoint(neighboringPoints[i], LayerMask.GetMask("Tower")))
             {
-                // Проверяем есть ли внутри замкнутого кольца враги
-                foreach(GameObject j in currentEnemies)
+                wayPoints = gameObject.GetComponent<PathFinder>().GetPath(neighboringPoints[i], target.transform.position);
+                if (wayPoints.Count == 0)
                 {
-                    wayPoints = gameObject.GetComponent<PathFinder>().GetPath(i, j.transform.position);
-                    if (wayPoints.Count > 0)
+                    // Проверяем есть ли внутри замкнутого кольца враги
+                    foreach (GameObject j in currentEnemies)
                     {
-                        return true;
+                        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(neighboringPoints[i], j.transform.position);
+                        if (wayPoints.Count > 0)
+                        {
+                            return true;
+                        }
                     }
                 }
             }

@@ -49,11 +49,13 @@ public class EnemyController : MonoBehaviour
         {
             gameController = gameControllerObject.GetComponent<GameController>();
             if(!air) gameController.NewTower += ChangePath;
+
             // Узнаем значение награды и hp в настройках текущей волны
             Wave currentWave = gameController.waves[gameController.currentWave];
             reward = currentWave.reward;
             hp = currentWave.hp;
             if (passenger) hp /= 2;
+
             // Узнаем значения отклонения
             if (deviationVector == Vector2.zero)
             {
@@ -83,7 +85,7 @@ public class EnemyController : MonoBehaviour
         
     }
 
-    void FixedUpdate()
+    void Update()
     {
         healthBar.transform.position = transform.position;
         if (!air)
@@ -150,7 +152,6 @@ public class EnemyController : MonoBehaviour
         {
             Vector2 distance = nextPosition - currentPosition;
             progress += 1 / (distance.magnitude / (speed * Time.deltaTime)) * freezeMod * bashMod;
-            Debug.Log(progress);
         }
         else
         {
@@ -161,7 +162,7 @@ public class EnemyController : MonoBehaviour
                 DestroyObject();
                 return;
             }
-            progress = 0f;
+            progress -= 1f;
             currentPosition = nextPosition;
             if (changePath)
             {
@@ -234,10 +235,11 @@ public class EnemyController : MonoBehaviour
                 GameObject rewardText = Instantiate(gameController.rewardText, transform.position, Quaternion.identity);
                 rewardText.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Text";
                 rewardText.GetComponentInChildren<TextMesh>().text = "+" + reward.ToString();
+                gameController.score += reward;
+                gameController.scoreText.text = gameController.score.ToString();
             }
             gameController.NewTower -= ChangePath;
-            gameController.currentMoney += reward;
-            gameController.moneyText.text = gameController.currentMoney.ToString();
+            gameController.ChangeMoney(reward);
             DestroyObject();
             return null;
         }
@@ -296,7 +298,6 @@ public class EnemyController : MonoBehaviour
     {
         if (healthBar != null)
         {
-            Debug.Log("это работает");
             Destroy(healthBar);
         }
     }

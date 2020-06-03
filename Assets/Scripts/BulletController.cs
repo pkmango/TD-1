@@ -43,7 +43,8 @@ public class BulletController : MonoBehaviour
             transform.position = Vector2.Lerp(startPosition, endPosition, t * t);
 
             direction = endPosition - startPosition;
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            //float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            float angle = Vector2.SignedAngle(Vector2.right, direction);
             rotation = Quaternion.AngleAxis(angle, Vector3.forward);
             transform.rotation = Quaternion.Lerp(transform.rotation, rotation, t);
         }

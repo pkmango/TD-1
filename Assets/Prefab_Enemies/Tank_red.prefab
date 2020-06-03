@@ -116,6 +116,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1.2
   hp: 500
+  passengers: {fileID: 0}
+  passenger: 0
   air: 0
   reward: 0
   healthBar: {fileID: 0}
@@ -128,6 +130,7 @@ MonoBehaviour:
   bashEffect: {fileID: 8755163169477506262}
   bashSpeed: 0.1
   debuffTime: 2
+  deviationVector: {x: 0, y: 0}
 --- !u!58 &3388263026347276747
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -171,7 +174,7 @@ Transform:
   m_GameObject: {fileID: 8755163169477506262}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.04, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.25, z: 1.25}
+  m_LocalScale: {x: 1.35, y: 1.35, z: 1.35}
   m_Children: []
   m_Father: {fileID: 3388263026347276756}
   m_RootOrder: 1
