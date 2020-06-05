@@ -6,7 +6,7 @@ using System.Collections;
 public class GameController : MonoBehaviour
 {
     public Wave[] waves; // Массив с волнами врагов
-    public float startWait; // Стартовое ожидание
+    //public float startWait; // Стартовое ожидание
     public float spawnWait; // Пауза между спауном врагов
     public float waveWait; // Пауза между волнами
     public GameObject spawnPoint; // Точка спауна
@@ -87,6 +87,7 @@ public class GameController : MonoBehaviour
         currentHeight = fixWidth * ratio;
         ortSize = currentHeight / 2f;
         Camera.main.orthographicSize = ortSize;
+
         currentMoney = startMoney;
     }
 
@@ -131,10 +132,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    IEnumerator SpawnWaves(float wait)
+    IEnumerator SpawnWaves()
     {
-        yield return new WaitForSeconds(wait);
-
         for (int i = currentWave; i < waves.Length; i++)
         {
             waveStartTime = Time.time;
@@ -165,7 +164,7 @@ public class GameController : MonoBehaviour
             StopCoroutine(spawnWaveCor);
             currentWave++;
             waveNumberText.text = (currentWave + 1).ToString() + "/" + waves.Length.ToString();
-            spawnWaveCor = StartCoroutine(SpawnWaves(0f));
+            spawnWaveCor = StartCoroutine(SpawnWaves());
 
             enemyTiles.transform.localPosition = new Vector2(enemyTilesX - enemyTilesStep * currentWave, enemyTiles.transform.localPosition.y);
         }
@@ -283,7 +282,7 @@ public class GameController : MonoBehaviour
     public void Started()
     {
         startButton.SetActive(false);
-        spawnWaveCor = StartCoroutine(SpawnWaves(startWait));
+        spawnWaveCor = StartCoroutine(SpawnWaves());
 
         StartCoroutine(EnemyTilesMove());
     }

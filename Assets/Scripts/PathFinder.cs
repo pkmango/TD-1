@@ -49,7 +49,7 @@ public class PathFinder : MonoBehaviour
                 } 
             }
             j++;
-            if (j > 500)
+            if (j > 1000)
             {
                 Debug.Log("Превышен лимит вычислений WaitingNodes.Count = " + WaitingNodes.Count);
                 break;
