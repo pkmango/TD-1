@@ -114,7 +114,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da9acb8965708642afb7ef45ca55a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.9
+  speed: 1.2
   hp: 500
   passengers: {fileID: 5090564738376178763, guid: e9beb9e2eb646534d93d4445e8569c37,
     type: 3}

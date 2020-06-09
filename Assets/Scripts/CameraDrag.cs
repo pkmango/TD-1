@@ -3,12 +3,14 @@
 public class CameraDrag : MonoBehaviour//, IDragHandler, IBeginDragHandler
 {
     public float startPositionY = 2f; // Начальная координат y для камеры
+    private float delayDrag = 0.1f; // Время задержки перед драгом
 
     private float deltaMax;
     private float deltaMin;
     private float deltaLimit; // Предел смещения камеры по y
     private float maxOrthSize = 10f; // Максимальный размер orthographicSize
     private float screenLimit; // Нижняя граница для drag
+    private float dragTime;
 
     bool allowDrag = false;
 
@@ -54,28 +56,32 @@ public class CameraDrag : MonoBehaviour//, IDragHandler, IBeginDragHandler
         {
             if (Input.mousePosition.y > screenLimit)
             {
+                dragTime = Time.time;
                 allowDrag = true;
-                _groundPlane.Raycast(mouseRay, out distanceToIntersection);
-                _dragOrigin = mouseRay.GetPoint(distanceToIntersection);
+                //_groundPlane.Raycast(mouseRay, out distanceToIntersection);
+                //_dragOrigin = mouseRay.GetPoint(distanceToIntersection);
             }
             else
             {
                 allowDrag = false;
             }
-            
         }
 
-        if (allowDrag)
+        if (allowDrag && Time.time - dragTime >= delayDrag)
         {
             // continue drag
             if (Input.GetKey(dragKey))
             {
                 _groundPlane.Raycast(mouseRay, out distanceToIntersection);
                 Vector3 intersection = mouseRay.GetPoint(distanceToIntersection);
-                //_transform.position += new Vector3(0f, _dragOrigin.y - intersection.y, 0f);
                 Vector3 deltaPos = _dragOrigin - intersection;
                 _transform.position = new Vector3(0f, Mathf.Clamp(_transform.position.y + deltaPos.y, deltaMin, deltaMax), -10f);
             }
+        }
+        else
+        {
+            _groundPlane.Raycast(mouseRay, out distanceToIntersection);
+            _dragOrigin = mouseRay.GetPoint(distanceToIntersection);
         }
     }
 }

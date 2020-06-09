@@ -148,12 +148,17 @@ public class GameController : MonoBehaviour
 
     IEnumerator SpawnEnemies(int i)
     {
+        // Назначаем задержку спауна
+        float wait = waves[i].spawnWait != 0 ? waves[i].spawnWait : spawnWait;
+        // Назначаем ширину случайного спауна
+        int _randomSpawn = waves[i].randomSpawn != 0 ? waves[i].randomSpawn : randomSpawn;
+
         for (int j = 0; j < waves[i].enemies.Length; j++)
         {
-            Vector3 randomSpawnPosition = spawnPoint.transform.position + new Vector3(Random.Range(-randomSpawn, randomSpawn), 0f, 0f);
+            Vector3 randomSpawnPosition = spawnPoint.transform.position + new Vector3(Random.Range(-_randomSpawn, _randomSpawn), 0f, 0f);
             Instantiate(waves[i].enemies[j], randomSpawnPosition, Quaternion.identity);
 
-            yield return new WaitForSeconds(spawnWait);
+            yield return new WaitForSeconds(wait);
         }
     }
 

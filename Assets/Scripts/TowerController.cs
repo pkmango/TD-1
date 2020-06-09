@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
@@ -64,6 +65,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         if (gameControllerObject != null)
         {
             gameController = gameControllerObject.GetComponent<GameController>();
+            gameController.NewCurrentMoney += SetUpgradeButton;
         }
         GameObject groundObject = GameObject.FindWithTag("Ground");
         if (groundObject != null)
@@ -250,6 +252,21 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         gameController.upgradeMenu.SetActive(false);
     }
 
+    private void SetUpgradeButton()
+    {
+        if (active && level != maxLevel)
+        {
+            if (gameController.currentMoney >= costs[level + 1])
+            {
+                gameController.upgradeButton.GetComponent<Button>().interactable = true;
+            }
+            else
+            {
+                gameController.upgradeButton.GetComponent<Button>().interactable = false;
+            }
+        }
+    }
+
     IEnumerator Upgrading(GameObject upgradingMenu)
     {
         // Анимируем прогресс-бар апгрейда в меню
@@ -296,6 +313,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         if (level != maxLevel)
         {
             gameController.upgradeButton.SetActive(true);
+            SetUpgradeButton();
             gameController.costTextUpPlus.text = "+" + costs[level + 1].ToString();
 
             if (damages[level] != damages[level + 1])
@@ -415,6 +433,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         }
             
         ground.Click -= ResetSelection;
+        gameController.NewCurrentMoney -= SetUpgradeButton;
         Destroy(gameObject);
     }
 }
