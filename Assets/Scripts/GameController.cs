@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     public GameObject spawnPoint; // Точка спауна
     public GameObject rewardText; // При уничтожении врага показывается текст с суммой награды
     public GameObject mainMenu;
+    public GameObject pauseMenu;
     public GameObject startButton;
     public GameObject upgradeButton;
     public Vector3 constrZonePosition; // Начальная точка для построения разрешенной зоны строительства
@@ -94,7 +95,6 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         moneyText.text = currentMoney.ToString();
-        //currentMoney = startMoney;
         livesText.text = startLives.ToString();
         currentLives = startLives;
         waveNumberText.text = currentWave.ToString() +"/" + waves.Length.ToString();
@@ -262,8 +262,8 @@ public class GameController : MonoBehaviour
         NewTower?.Invoke(true);
         upgradeMenu.SetActive(false);
         ChangeMoney(pressedTower.currentCost / 2);
-        pressedTower.StopAllCoroutines();
-        Destroy(pressedTower.upgradeProgress.gameObject);
+        //pressedTower.StopAllCoroutines();
+        //Destroy(pressedTower.upgradeProgress.gameObject);
         pressedTower.DestroyThisTower();
     }
 
@@ -290,6 +290,60 @@ public class GameController : MonoBehaviour
         spawnWaveCor = StartCoroutine(SpawnWaves());
 
         StartCoroutine(EnemyTilesMove());
+    }
+
+    public void Pause()
+    {
+        Time.timeScale = 0f;
+        pauseMenu.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1f;
+        pauseMenu.SetActive(false);
+    }
+
+    public void Restart()
+    {
+        HideConstrZone();
+        Zeroing();
+        upgradeMenu.SetActive(false);
+        startButton.SetActive(true);
+        Resume();
+    }
+
+    // Обнуление всего для нового старта
+    public void Zeroing()
+    {
+        
+        StopAllCoroutines();
+        currentMoney = startMoney;
+        moneyText.text = currentMoney.ToString();
+        currentLives = startLives;
+        livesText.text = startLives.ToString();
+        currentWave = 0;
+        waveNumberText.text = currentWave.ToString() + "/" + waves.Length.ToString();
+        enemyTiles.transform.localPosition = new Vector2(enemyTilesX, enemyTiles.transform.localPosition.y);
+        clockText.text = waveWait.ToString();
+
+        GameObject[] towers = GameObject.FindGameObjectsWithTag("Tower");
+        foreach (GameObject i in towers)
+        {
+            i.GetComponent<TowerController>().DestroyThisTower();
+        }
+
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach(GameObject i in enemies)
+        {
+            i.GetComponent<EnemyController>().DestroyObject(true);
+        }
+
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
+        foreach (GameObject i in bullets)
+        {
+            Destroy(i);
+        }
     }
 
     public void GameOver()

@@ -134,7 +134,7 @@ public class EnemyController : MonoBehaviour
         else
         {
             Debug.Log("Блокировка пути!");
-            gameController.NewTower -= ChangePath;
+            //gameController.NewTower -= ChangePath;
             DestroyObject();
         }
         //Debug.Log("Событие!");
@@ -157,7 +157,7 @@ public class EnemyController : MonoBehaviour
         {
             if(currentPoint == 0)
             {
-                gameController.NewTower -= ChangePath;
+                //gameController.NewTower -= ChangePath;
                 gameController.SubtractLife();
                 DestroyObject();
                 return;
@@ -238,7 +238,7 @@ public class EnemyController : MonoBehaviour
                 gameController.score += reward;
                 gameController.scoreText.text = gameController.score.ToString();
             }
-            gameController.NewTower -= ChangePath;
+            //gameController.NewTower -= ChangePath;
             gameController.ChangeMoney(reward);
             DestroyObject();
             return null;
@@ -281,9 +281,11 @@ public class EnemyController : MonoBehaviour
         bashMod = 1f;
     }
 
-    public void DestroyObject()
+    public void DestroyObject(bool restart = false)
     {
-        if (passengers != null && currentPoint > 0)
+        if(!air) gameController.NewTower -= ChangePath;
+
+        if (passengers != null && currentPoint > 0 && !restart)
         {
             for(int i = 0; i < 3; i++)
             {
@@ -292,6 +294,8 @@ public class EnemyController : MonoBehaviour
                 newEnemy.GetComponent<EnemyController>().deviationVector = randomPosition;
             }
         }
+
+        StopAllCoroutines();
         Destroy(gameObject);
     }
     private void OnDestroy()

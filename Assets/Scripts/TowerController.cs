@@ -425,6 +425,8 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
     public void DestroyThisTower()
     {
+        StopAllCoroutines();
+
         if (boost)
         {
             gameController.NewTower -= NewTowerBoost;
@@ -434,6 +436,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             
         ground.Click -= ResetSelection;
         gameController.NewCurrentMoney -= SetUpgradeButton;
+        Destroy(upgradeProgress.gameObject);
         Destroy(gameObject);
     }
 }
