@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
     public GameObject rewardText; // При уничтожении врага показывается текст с суммой награды
     public GameObject mainMenu;
     public GameObject pauseMenu;
+    public GameObject gameOverMenu;
     public GameObject startButton;
     public GameObject upgradeButton;
     public Vector3 constrZonePosition; // Начальная точка для построения разрешенной зоны строительства
@@ -34,6 +35,7 @@ public class GameController : MonoBehaviour
     public Text waveNumberText;
     public int score;
     public Text scoreText;
+    public Text gameOverScoreText;
     public float deviation = 0.1f; // Предел случайного отклонения
     public int randomSpawn = 3; // Координата спауна меняется в этих пределах случайным образом
     [HideInInspector]
@@ -107,6 +109,14 @@ public class GameController : MonoBehaviour
         }
 
         CreateWaveIcons();
+    }
+
+    void Update()
+    {
+        if (Application.platform == RuntimePlatform.Android && Input.GetKeyDown(KeyCode.Escape))
+        {
+            Pause();
+        }
     }
 
     private void CreateWaveIcons()
@@ -302,6 +312,7 @@ public class GameController : MonoBehaviour
     {
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
+        gameOverMenu.SetActive(false);
     }
 
     public void Restart()
@@ -313,6 +324,12 @@ public class GameController : MonoBehaviour
         Resume();
     }
 
+    public void GoToMainMenu()
+    {
+        Restart();
+        mainMenu.SetActive(true);
+    }
+
     // Обнуление всего для нового старта
     public void Zeroing()
     {
@@ -322,6 +339,8 @@ public class GameController : MonoBehaviour
         moneyText.text = currentMoney.ToString();
         currentLives = startLives;
         livesText.text = startLives.ToString();
+        score = 0;
+        scoreText.text = "0";
         currentWave = 0;
         waveNumberText.text = currentWave.ToString() + "/" + waves.Length.ToString();
         enemyTiles.transform.localPosition = new Vector2(enemyTilesX, enemyTiles.transform.localPosition.y);
@@ -348,7 +367,9 @@ public class GameController : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("Game Over");
+        Time.timeScale = 0f;
+        gameOverMenu.SetActive(true);
+        gameOverScoreText.text = score.ToString();
     }
 
     public void QuitGame ()
