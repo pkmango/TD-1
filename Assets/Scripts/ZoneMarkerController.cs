@@ -13,7 +13,8 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
     private GameObject tower;
     private GameObject spawn;
     private GameObject target;
-    private Text blocking;
+    [HideInInspector]
+    public Text blocking; // Мерцающее сообщение "Blocking"
     private IEnumerator enemiesCheck;
     private int count; // Счетчик для BlockingTwinkle
     private List<Vector2> wayPoints;

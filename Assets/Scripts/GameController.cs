@@ -11,9 +11,12 @@ public class GameController : MonoBehaviour
     public float waveWait; // Пауза между волнами
     public GameObject spawnPoint; // Точка спауна
     public GameObject rewardText; // При уничтожении врага показывается текст с суммой награды
+    public Image menuTransitionImg; // Черная заглушка для перехода между меню
+    public float transitionTime = 0.5f; 
     public GameObject mainMenu;
     public GameObject pauseMenu;
     public GameObject gameOverMenu;
+    public GameObject winMenu;
     public GameObject startButton;
     public GameObject upgradeButton;
     public Vector3 constrZonePosition; // Начальная точка для построения разрешенной зоны строительства
@@ -27,6 +30,7 @@ public class GameController : MonoBehaviour
     public event ChangeCurrentMoney NewCurrentMoney; // Событие для изменение текущих денег
     public GameObject enemyTiles; // Канвас на который располагается очередь из плиток с обозначением слудющей волны
     public int enemyTilesStep = 269; // Ширина шага в пикселях, через который размещены плитки enemyTiles
+    public Text blockingText; // Мерцающее сообщение "Blocking"
     public Text clockText; // Текстовое поле для отображения времени до начала новой волны
     public Text moneyText;
     public int startMoney;
@@ -36,6 +40,7 @@ public class GameController : MonoBehaviour
     public int score;
     public Text scoreText;
     public Text gameOverScoreText;
+    public Text winScoreText;
     public float deviation = 0.1f; // Предел случайного отклонения
     public int randomSpawn = 3; // Координата спауна меняется в этих пределах случайным образом
     [HideInInspector]
@@ -169,6 +174,11 @@ public class GameController : MonoBehaviour
             Instantiate(waves[i].enemies[j], randomSpawnPosition, Quaternion.identity);
 
             yield return new WaitForSeconds(wait);
+
+            if(i == waves.Length - 1 && j == waves[i].enemies.Length - 1)
+            {
+                StartCoroutine(CheckWinningCondition());
+            }
         }
     }
 
@@ -182,6 +192,21 @@ public class GameController : MonoBehaviour
             spawnWaveCor = StartCoroutine(SpawnWaves());
 
             enemyTiles.transform.localPosition = new Vector2(enemyTilesX - enemyTilesStep * currentWave, enemyTiles.transform.localPosition.y);
+        }
+    }
+
+    IEnumerator CheckWinningCondition()
+    {
+        while (true)
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            GameObject[] airEnemies = GameObject.FindGameObjectsWithTag("AirEnemy");
+            if (enemies.Length == 0 && airEnemies.Length == 0)
+            {
+                Win();
+                yield break;
+            }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -248,6 +273,7 @@ public class GameController : MonoBehaviour
 
     public void HideConstrZone()
     {
+        blockingText.enabled = false;
         DestroyConstrMarkers();
         characteristicsMenu.SetActive(false);
 
@@ -289,9 +315,16 @@ public class GameController : MonoBehaviour
         }
     }
 
-    public void NewGame()
+    public void ClickNewGame()
     {
+        StartCoroutine(NewGame());
+    }
+
+    IEnumerator NewGame()
+    {
+        yield return StartCoroutine(Transition(0f));
         mainMenu.SetActive(false);
+        yield return StartCoroutine(Transition(1f));
     }
 
     public void Started()
@@ -370,6 +403,49 @@ public class GameController : MonoBehaviour
         Time.timeScale = 0f;
         gameOverMenu.SetActive(true);
         gameOverScoreText.text = score.ToString();
+    }
+
+    public void Win()
+    {
+        Time.timeScale = 0f;
+        winMenu.SetActive(true);
+        winScoreText.text = score.ToString();
+    }
+
+    IEnumerator Transition(float alpha)
+    {
+        int stepsNumber = (int)(transitionTime / Time.fixedDeltaTime); // Количество шагов необходимое для перехода
+        Debug.Log(transitionTime);
+        Debug.Log(stepsNumber);
+        float step = 1 / (float)stepsNumber;
+        menuTransitionImg.color = new Color(0f, 0f, 0f, alpha);
+
+        if (alpha == 0f)
+        {
+            
+            menuTransitionImg.gameObject.SetActive(true);
+
+            for (int i = 0; i <= stepsNumber; i++)
+            {
+                alpha += step;
+                menuTransitionImg.color = new Color(0f, 0f, 0f, alpha);
+                yield return new WaitForFixedUpdate();
+            }
+
+            alpha = 1f;
+            menuTransitionImg.color = new Color(0f, 0f, 0f, alpha);
+        }
+        else
+        {
+            for (int i = 0; i <= stepsNumber; i++)
+            {
+                alpha -= step;
+                menuTransitionImg.color = new Color(0f, 0f, 0f, alpha);
+                yield return new WaitForFixedUpdate();
+            }
+
+            menuTransitionImg.gameObject.SetActive(false);
+        }
     }
 
     public void QuitGame ()
