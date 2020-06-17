@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 510204991572456267}
   - component: {fileID: 510204991572456266}
   - component: {fileID: 4636717015498904151}
+  - component: {fileID: 6679404626765953134}
   m_Layer: 8
   m_Name: Tower_3
   m_TagString: Tower
@@ -188,6 +189,7 @@ MonoBehaviour:
   earthquake: 0
   quakeEffect: {fileID: 0}
   quakeDuration: 0.1
+  quakeSound: {fileID: 0}
   towerName: Frost Tower
   description: This tower fires freezing bullets that slow down the target.
   icon: {fileID: -2635152390712553239, guid: 2f3b5b19546117e4d90f9585260cf90d, type: 3}
@@ -204,11 +206,11 @@ MonoBehaviour:
   - 2.5
   - 2.5
   fireRates:
-  - 2
-  - 2
-  - 2
-  - 2
-  - 2
+  - 1.5
+  - 1.5
+  - 1.5
+  - 1.5
+  - 1.5
   glow: {fileID: 1033016420114343125}
   buffGlow: {fileID: 195279794813879047}
   circle: {fileID: 2383474142466179363}
@@ -229,6 +231,102 @@ MonoBehaviour:
   currentRange: 0
   currentFireRate: 0
   buff: 0
+--- !u!82 &6679404626765953134
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510204991572456265}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: e76c20b30d54f4050a459a896a42d83b, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 150
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &510204992089486114
 GameObject:
   m_ObjectHideFlags: 0

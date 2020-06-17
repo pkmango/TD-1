@@ -12,6 +12,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public bool earthquake; // Башня типа earthquake?
     public GameObject quakeEffect;
     public float quakeDuration = 0.1f;
+    public AudioSource quakeSound;
     public string towerName;
     public string description;
     public Sprite icon;
@@ -118,6 +119,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
                 foreach(Transform i in spawnPoints)
                 {
                     GameObject newBullet = Instantiate(bullet, i.position, i.rotation);
+                    GetComponent<AudioSource>().Play();
                     newBullet.GetComponent<BulletController>().targetPosition = lockOnTarget.currentTarget;
                     newBullet.GetComponent<BulletController>().damage = currentDamage;
                     if (spawnPoints.Length > 1) yield return new WaitForSeconds(0.2f);
@@ -174,6 +176,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
                     }
                     quakeEffect.SetActive(true);
+                    quakeSound.Play();
                     yield return new WaitForSeconds(quakeWait);
                     quakeEffect.SetActive(false);
                 }

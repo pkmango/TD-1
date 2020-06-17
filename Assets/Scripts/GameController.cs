@@ -36,6 +36,7 @@ public class GameController : MonoBehaviour
     public int startMoney;
     public Text livesText;
     public int startLives = 20;
+    public AudioSource missSound; // Звук если враг прорвался и жизнь отнялась
     public Text waveNumberText;
     public int score;
     public Text scoreText;
@@ -227,7 +228,8 @@ public class GameController : MonoBehaviour
     {
         currentLives--;
         livesText.text = currentLives.ToString();
-        if (currentLives <= 0)
+        missSound.Play();
+        if (currentLives == 0)
         {
             GameOver();
         }
@@ -348,19 +350,39 @@ public class GameController : MonoBehaviour
         gameOverMenu.SetActive(false);
     }
 
-    public void Restart()
+    public void ClickRestart()
     {
+        StartCoroutine(Restart());
+    }
+
+    IEnumerator Restart()
+    {
+        Time.timeScale = 1f;
+        yield return StartCoroutine(Transition(0f));
         HideConstrZone();
         Zeroing();
         upgradeMenu.SetActive(false);
         startButton.SetActive(true);
         Resume();
+        yield return StartCoroutine(Transition(1f));
     }
 
-    public void GoToMainMenu()
+    public void ClickMainMenu()
     {
-        Restart();
+        StartCoroutine(GoToMainMenu());
+    }
+
+    IEnumerator GoToMainMenu()
+    {
+        Time.timeScale = 1f;
+        yield return StartCoroutine(Transition(0f));
+        HideConstrZone();
+        Zeroing();
+        upgradeMenu.SetActive(false);
+        startButton.SetActive(true);
+        Resume();
         mainMenu.SetActive(true);
+        yield return StartCoroutine(Transition(1f));
     }
 
     // Обнуление всего для нового старта

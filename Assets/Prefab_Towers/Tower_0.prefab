@@ -483,6 +483,7 @@ MonoBehaviour:
   earthquake: 0
   quakeEffect: {fileID: 0}
   quakeDuration: 0.1
+  quakeSound: {fileID: 0}
   towerName: Basic Tower
   description: The cheapest tower. It is convenient to use for building barriers.
   icon: {fileID: 2618518762687683968, guid: 2f3b5b19546117e4d90f9585260cf90d, type: 3}
@@ -499,11 +500,11 @@ MonoBehaviour:
   - 2.5
   - 3.5
   fireRates:
-  - 2
-  - 2
-  - 2
-  - 2
   - 1.5
+  - 1.5
+  - 1.5
+  - 1.5
+  - 1.2
   glow: {fileID: 7419279343976387754}
   buffGlow: {fileID: 2460618528234750916}
   circle: {fileID: 5310690286418145628}
