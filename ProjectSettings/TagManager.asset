@@ -15,6 +15,7 @@ TagManager:
   - TowerButton
   - AirEnemy
   - Bullet
+  - AudioController
   layers:
   - Default
   - TransparentFX

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
@@ -10,6 +12,9 @@ public class AudioController : MonoBehaviour
     public Toggle toggleSound;
     public Toggle toggleMusicPause;
     public Toggle toggleSoundPause;
+    public int maxShotSounds; // Максимальное количество звуков выстрела одновременно
+    [HideInInspector]
+    public List<AudioSource> soundsList = new List<AudioSource>();
 
     private int soundsKey;
     private int musicKey;
@@ -20,6 +25,46 @@ public class AudioController : MonoBehaviour
         SetSoundsAfterLoad();
         musicKey = PlayerPrefs.GetInt("musicKey", 1);
         SetMusicAfterLoad();
+    }
+
+    //private void FixedUpdate()
+    //{
+    //    foreach(AudioSource i in soundsList)
+    //    {
+    //        if (!i.isPlaying)
+    //        {
+    //            soundsList.Remove(i);
+    //            Debug.Log("удаление");
+    //        }
+                
+    //        break;
+    //    }
+    //}
+
+    public void PlaySound(AudioSource sound)
+    {
+        int soundsCount = 0;
+
+        foreach(AudioSource i in soundsList)
+        {
+            if (sound.clip == i.clip)
+            {
+                soundsCount++;
+            }
+        }
+        if(soundsCount <= maxShotSounds)
+        {
+            soundsList.Add(sound);
+            sound.Play();
+            StartCoroutine(FinishPlaySound(sound));
+        }
+        
+    }
+
+    IEnumerator FinishPlaySound(AudioSource sound)
+    {
+        yield return new WaitForSeconds(sound.clip.length);
+        soundsList.Remove(sound);
     }
 
     public void SetSoundsAfterLoad()

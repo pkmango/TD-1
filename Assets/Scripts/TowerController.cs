@@ -48,7 +48,10 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     [HideInInspector]
     public float currentRange, currentFireRate;
     private TilemapController ground;
+    private AudioController audioController;
     public float buff; // модификатор характеристик (процент/100)
+
+    public bool shot; // для теста
 
     void Awake()
     {
@@ -73,6 +76,11 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         {
             ground = groundObject.GetComponent<TilemapController>();
             ground.Click += ResetSelection;
+        }
+        GameObject audioControllerObject = GameObject.FindWithTag("AudioController");
+        if(audioControllerObject != null)
+        {
+            audioController = audioControllerObject.GetComponent<AudioController>();
         }
 
         GameObject newProgress = Instantiate(progress.gameObject, gameController.upgradingMenu.gameObject.transform);
@@ -119,18 +127,17 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
                 foreach(Transform i in spawnPoints)
                 {
                     GameObject newBullet = Instantiate(bullet, i.position, i.rotation);
-                    GetComponent<AudioSource>().Play();
+                    audioController.PlaySound(GetComponent<AudioSource>());
                     newBullet.GetComponent<BulletController>().targetPosition = lockOnTarget.currentTarget;
                     newBullet.GetComponent<BulletController>().damage = currentDamage;
-                    if (spawnPoints.Length > 1) yield return new WaitForSeconds(0.2f);
+                    if (spawnPoints.Length > 1) yield return new WaitForSeconds(0.19f);
                     if (!lockOnTarget.targetLocked) break;
                 }
                 
             }
-
+            shot = !shot;
             yield return new WaitForSeconds(1f / currentFireRate);
         }
-        
     }
 
     IEnumerator FireEarthquake()
@@ -164,8 +171,8 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
                     {
                         if (i.tag == "AirEnemy") continue;
 
-                        // Вероятность оглушения 10%
-                        if (Random.value < 0.1f)
+                        // Вероятность оглушения 11%
+                        if (Random.value < 0.11f)
                         {
                             i.GetComponent<EnemyController>().Health(currentDamage, false, true);
                         }
@@ -290,11 +297,9 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         upgrading = false;
         darkImgForUp.SetActive(false);
         upgradingMenu.SetActive(false);
-        //if (boost) SetBoost(0.01f * (damages[level + 1] - currentDamage)); // Увеличиваем баф соседних башен на разницу значений
+
         level++;
         if (boost) SetBoost(0.01f * (damages[level] - currentDamage));
-        //gameController.currentMoney -= costs[level];
-        //gameController.moneyText.text = gameController.currentMoney.ToString();
 
         currentCost += costs[level];
         Boost(); // Увеличиваем боевые параметры с учетом бафа
@@ -323,13 +328,11 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             {
                 if (boost)
                 {
-                    //gameController.damageTextUp.text += " (" + (damages[level + 1] + (int)(damages[level + 1] * buff)).ToString() + "%)";
-                    gameController.damageTextPlus.text = "+" + (damages[level + 1] + (int)(damages[level + 1] * buff)).ToString() + "%";
+                    gameController.damageTextPlus.text = (damages[level + 1] + (int)(damages[level + 1] * buff)).ToString() + "%";
                 }
                 else
                 {
-                    //gameController.damageTextUp.text += " (" + (damages[level + 1] + (int)(damages[level + 1] * buff)).ToString() + ")";
-                    gameController.damageTextPlus.text = "+" + (damages[level + 1] + (int)(damages[level + 1] * buff)).ToString();
+                    gameController.damageTextPlus.text = (damages[level + 1] + (int)(damages[level + 1] * buff)).ToString();
                 }
             }
             else
@@ -339,18 +342,28 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
             if (ranges[level] != ranges[level + 1])
             {
-                gameController.rangeTextUp.text += " (" + ranges[level + 1].ToString() + ")";
+                gameController.rangeTextPlus.text = ranges[level + 1].ToString();
+            }
+            else
+            {
+                gameController.rangeTextPlus.text = "";
             }
 
             if (fireRates[level] != fireRates[level + 1])
             {
-                gameController.fireRateTextUp.text += " (" + fireRates[level + 1].ToString() + ")";
+                gameController.fireRateTextPlus.text = fireRates[level + 1].ToString();
+            }
+            else
+            {
+                gameController.fireRateTextPlus.text = "";
             }
         }
         else
         {
             gameController.costTextUpPlus.text = "";
             gameController.damageTextPlus.text = "";
+            gameController.rangeTextPlus.text = "";
+            gameController.fireRateTextPlus.text = "";
             gameController.upgradeButton.SetActive(false);
         }
 

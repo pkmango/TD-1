@@ -169,7 +169,7 @@ Transform:
   m_GameObject: {fileID: 2306699338953285529}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -0.328, y: 0, z: -1}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_Children: []
   m_Father: {fileID: 3477675476861714472}
   m_RootOrder: 0
@@ -481,6 +481,7 @@ GameObject:
   - component: {fileID: 3477675476861714471}
   - component: {fileID: 3477675476861714470}
   - component: {fileID: 8579179547481792827}
+  - component: {fileID: 1096050227063084548}
   m_Layer: 8
   m_Name: Tower_2
   m_TagString: Tower
@@ -576,27 +577,30 @@ MonoBehaviour:
   earthquake: 0
   quakeEffect: {fileID: 0}
   quakeDuration: 0.1
+  quakeSound: {fileID: 0}
   towerName: Rocket Tower
   description: The missile deals area damage. Does not attack air targets.
   icon: {fileID: 1230393190918829621, guid: 2f3b5b19546117e4d90f9585260cf90d, type: 3}
   darkImgForUp: {fileID: 3121936372446942014}
   upProgress: {fileID: 4874048473513785868}
   level: 0
-  maxLevel: 4
-  costs: 14000000140000002800000050000000b4000000
-  damages: 0100000002000000040000000800000012000000
+  maxLevel: 5
+  costs: 140000000f000000230000003c0000006e000000a0000000
+  damages: 080000001000000020000000400000008000000000010000
   ranges:
-  - 3.5
-  - 3.5
-  - 3.5
-  - 3.5
-  - 3.5
+  - 3
+  - 3.2
+  - 3.4
+  - 3.9
+  - 4.2
+  - 4.4
   fireRates:
-  - 1.1
-  - 1.1
-  - 1.1
-  - 1.1
-  - 1.1
+  - 0.55
+  - 0.55
+  - 0.55
+  - 0.55
+  - 0.55
+  - 0.55
   glow: {fileID: 4107759091088037817}
   buffGlow: {fileID: 8562533520641988683}
   circle: {fileID: 1604546788837438031}
@@ -606,6 +610,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 590b699d8d48d14488e7dfc3a7d0c783, type: 3}
   - {fileID: 21300000, guid: 120d04bb8c0f3fd41af80ac8a4db9d6d, type: 3}
   - {fileID: 21300000, guid: cf41e49ed757f814689029ca095272a0, type: 3}
+  - {fileID: 21300000, guid: d6c629576fd818f4787c977ff6908559, type: 3}
   progress: {fileID: 7730110368997332435, guid: 200d3e37933783f419d874b83a2b44cd,
     type: 3}
   turret: {fileID: 7465185341876743683}
@@ -617,6 +622,103 @@ MonoBehaviour:
   currentRange: 0
   currentFireRate: 0
   buff: 0
+--- !u!82 &1096050227063084548
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3477675476861714469}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 4d9dd0cccf783514e885c975a3f39845,
+    type: 2}
+  m_audioClip: {fileID: 8300000, guid: a3ff8a98bf8e5ab4fa7f8b085fb35dd4, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &3477675477553434841
 GameObject:
   m_ObjectHideFlags: 0

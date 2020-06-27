@@ -42,6 +42,7 @@ GameObject:
   - component: {fileID: 328618975395855334}
   - component: {fileID: 328618975395855335}
   - component: {fileID: 4882759633182186234}
+  - component: {fileID: 3129689266006623299}
   m_Layer: 8
   m_Name: Tower_4
   m_TagString: Tower
@@ -139,6 +140,7 @@ MonoBehaviour:
   earthquake: 0
   quakeEffect: {fileID: 0}
   quakeDuration: 0.1
+  quakeSound: {fileID: 0}
   towerName: Anti-aircraft Tower
   description: Tower for the destruction of air targets. Launches 3 rockets at a
     time.
@@ -146,21 +148,23 @@ MonoBehaviour:
   darkImgForUp: {fileID: 3155043851185952841}
   upProgress: {fileID: 5790833374271360208}
   level: 0
-  maxLevel: 4
-  costs: 05000000050000000a0000001400000032000000
-  damages: 0a000000140000001e0000002800000050000000
+  maxLevel: 5
+  costs: 320000001e000000320000004b0000007d0000002c010000
+  damages: 2800000050000000a0000000400100008002000014050000
   ranges:
-  - 2.5
-  - 2.5
-  - 2.5
-  - 2.5
-  - 3.5
+  - 2.7
+  - 2.8
+  - 2.9
+  - 3
+  - 3.1
+  - 3.4
   fireRates:
-  - 2
-  - 2
-  - 2
-  - 2
-  - 1.5
+  - 1.8
+  - 1.8
+  - 1.8
+  - 1.8
+  - 1.8
+  - 2.2
   glow: {fileID: 994701219193498744}
   buffGlow: {fileID: 5268841852024093462}
   circle: {fileID: 2488287798132738446}
@@ -170,6 +174,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 590b699d8d48d14488e7dfc3a7d0c783, type: 3}
   - {fileID: 21300000, guid: 120d04bb8c0f3fd41af80ac8a4db9d6d, type: 3}
   - {fileID: 21300000, guid: cf41e49ed757f814689029ca095272a0, type: 3}
+  - {fileID: 21300000, guid: d6c629576fd818f4787c977ff6908559, type: 3}
   progress: {fileID: 7730110368997332435, guid: 200d3e37933783f419d874b83a2b44cd,
     type: 3}
   turret: {fileID: 6004979285193266626}
@@ -181,6 +186,104 @@ MonoBehaviour:
   currentRange: 0
   currentFireRate: 0
   buff: 0
+  shot: 0
+--- !u!82 &3129689266006623299
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328618975395855332}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 4d9dd0cccf783514e885c975a3f39845,
+    type: 2}
+  m_audioClip: {fileID: 8300000, guid: a3ff8a98bf8e5ab4fa7f8b085fb35dd4, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &328618975946439567
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,7 +554,7 @@ Transform:
   m_GameObject: {fileID: 1499514576192037976}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -0.328, y: 0, z: -1}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_Children: []
   m_Father: {fileID: 328618975395855337}
   m_RootOrder: 0

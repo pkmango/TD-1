@@ -34,16 +34,20 @@ public class GameController : MonoBehaviour
     public Text clockText; // Текстовое поле для отображения времени до начала новой волны
     public Text moneyText;
     public int startMoney;
+    public int nextBtnReward; // Награда за нажатие кнопки Next
     public Text livesText;
     public int startLives = 20;
     public AudioSource missSound; // Звук если враг прорвался и жизнь отнялась
+    public AudioSource newTowerSound; // Звук при постановке новой башни
+    public AudioSource sellTowerSound; //  Звук при продаже башни
     public Text waveNumberText;
     public int score;
     public Text scoreText;
     public Text gameOverScoreText;
     public Text winScoreText;
-    public float deviation = 0.1f; // Предел случайного отклонения
-    public int randomSpawn = 3; // Координата спауна меняется в этих пределах случайным образом
+    public float armor; // Процент поглащаемого урона
+    public float deviation = 0.15f; // Предел случайного отклонения
+    public int randomSpawn = 0; // Координата спауна меняется в этих пределах случайным образом
     [HideInInspector]
     public int currentMoney, currentLives;
     // Меню с прогрессом, отоброжаемое когда башня апгрейдится
@@ -85,9 +89,13 @@ public class GameController : MonoBehaviour
     private List<GameObject> markers = new List<GameObject>();
     private TilemapController ground; // Земля
     public int currentWave = 0;
-    private Coroutine spawnWaveCor;
+    // Корутины, котороми нужно управлять
+    private Coroutine spawnWaveCor, tilesMoveCor, checkWinningCor;
+    private List<Coroutine> spawnEnemiesCorList = new List<Coroutine>();
     private float enemyTilesX; // Начальная позиция enemyTiles по оси х
     private float waveStartTime; // Время когда стартовала текущая волна
+    public GameObject placeholderNext; // Заглушка для Next
+    private float delayNext = 0.5f; // Задержка после нажатия Next
 
     void Awake()
     {
@@ -152,11 +160,13 @@ public class GameController : MonoBehaviour
     {
         for (int i = currentWave; i < waves.Length; i++)
         {
+            StartCoroutine(SetPlaceholderForNext());
+
             waveStartTime = Time.time;
             currentWave = i;
             waveNumberText.text = (currentWave + 1).ToString() + "/" + waves.Length.ToString();
 
-            StartCoroutine(SpawnEnemies(i));
+            spawnEnemiesCorList.Add(StartCoroutine(SpawnEnemies(i)));
 
             yield return new WaitForSeconds(waveWait);
         }
@@ -178,13 +188,15 @@ public class GameController : MonoBehaviour
 
             if(i == waves.Length - 1 && j == waves[i].enemies.Length - 1)
             {
-                StartCoroutine(CheckWinningCondition());
+                checkWinningCor = StartCoroutine(CheckWinningCondition());
             }
         }
     }
 
     public void Next()
     {
+        StartCoroutine(SetPlaceholderForNext());
+
         if(currentWave + 1 < waves.Length)
         {
             StopCoroutine(spawnWaveCor);
@@ -193,7 +205,23 @@ public class GameController : MonoBehaviour
             spawnWaveCor = StartCoroutine(SpawnWaves());
 
             enemyTiles.transform.localPosition = new Vector2(enemyTilesX - enemyTilesStep * currentWave, enemyTiles.transform.localPosition.y);
+
+            ChangeMoney(nextBtnReward); // Награда за Next
+            ChangeScore(currentWave); 
+            // Визуализация награды за нажатие Next
+            Vector2 rewardPos = Camera.main.ScreenToWorldPoint(startButton.transform.position);
+            rewardPos += new Vector2(-1f, 1f); // Смещаем на единицу
+            GameObject nextBtnRewardText = Instantiate(rewardText, rewardPos, Quaternion.identity);
+            nextBtnRewardText.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Text";
+            nextBtnRewardText.GetComponentInChildren<TextMesh>().text = "+" + nextBtnReward.ToString();
         }
+    }
+
+    IEnumerator SetPlaceholderForNext()
+    {
+        placeholderNext.SetActive(true);
+        yield return new WaitForSeconds(delayNext);
+        placeholderNext.SetActive(false);
     }
 
     IEnumerator CheckWinningCondition()
@@ -215,6 +243,8 @@ public class GameController : MonoBehaviour
     {
         lastTower = tower;
         NewTower?.Invoke();
+        newTowerSound.time = 0.05f;
+        newTowerSound.Play();
     }
 
     public void ChangeMoney(int money)
@@ -222,6 +252,12 @@ public class GameController : MonoBehaviour
         currentMoney += money;
         moneyText.text = currentMoney.ToString();
         NewCurrentMoney?.Invoke();
+    }
+
+    public void ChangeScore(int deltaScore)
+    {
+        score += deltaScore;
+        scoreText.text = score.ToString();
     }
 
     public void SubtractLife()
@@ -261,7 +297,7 @@ public class GameController : MonoBehaviour
         costText.text = selectedTower.costs[0].ToString();
         damageText.text = selectedTower.damages[0].ToString();
         if (selectedTower.boost) damageText.text += "%"; // Для усиливающих башен вместо урона отображается процент усиления
-        rangeText.text = (selectedTower.ranges[0] - 0.5f).ToString();
+        rangeText.text = selectedTower.ranges[0].ToString();
         fireRateText.text = selectedTower.fireRates[0].ToString();
         towerNameText.text = selectedTower.towerName;
 
@@ -300,8 +336,8 @@ public class GameController : MonoBehaviour
         NewTower?.Invoke(true);
         upgradeMenu.SetActive(false);
         ChangeMoney(pressedTower.currentCost / 2);
-        //pressedTower.StopAllCoroutines();
-        //Destroy(pressedTower.upgradeProgress.gameObject);
+        sellTowerSound.time = 0.05f;
+        sellTowerSound.Play();
         pressedTower.DestroyThisTower();
     }
 
@@ -333,8 +369,7 @@ public class GameController : MonoBehaviour
     {
         startButton.SetActive(false);
         spawnWaveCor = StartCoroutine(SpawnWaves());
-
-        StartCoroutine(EnemyTilesMove());
+        tilesMoveCor = StartCoroutine(EnemyTilesMove());
     }
 
     public void Pause()
@@ -348,6 +383,7 @@ public class GameController : MonoBehaviour
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
         gameOverMenu.SetActive(false);
+        winMenu.SetActive(false);
     }
 
     public void ClickRestart()
@@ -358,11 +394,11 @@ public class GameController : MonoBehaviour
     IEnumerator Restart()
     {
         Time.timeScale = 1f;
-        yield return StartCoroutine(Transition(0f));
         HideConstrZone();
         Zeroing();
         upgradeMenu.SetActive(false);
         startButton.SetActive(true);
+        yield return StartCoroutine(Transition(0f));
         Resume();
         yield return StartCoroutine(Transition(1f));
     }
@@ -375,23 +411,31 @@ public class GameController : MonoBehaviour
     IEnumerator GoToMainMenu()
     {
         Time.timeScale = 1f;
-        yield return StartCoroutine(Transition(0f));
         HideConstrZone();
         Zeroing();
         upgradeMenu.SetActive(false);
         startButton.SetActive(true);
+        yield return StartCoroutine(Transition(0f));
         Resume();
         mainMenu.SetActive(true);
         yield return StartCoroutine(Transition(1f));
     }
 
     // Обнуление всего для нового старта
-    public void Zeroing()
+    private void Zeroing()
     {
-        
-        StopAllCoroutines();
+        if(spawnWaveCor != null) StopCoroutine(spawnWaveCor);
+        foreach(Coroutine i in spawnEnemiesCorList)
+        {
+            if (i != null) StopCoroutine(i);
+        }
+        spawnEnemiesCorList.Clear();
+        if (tilesMoveCor != null) StopCoroutine(tilesMoveCor);
+        if(checkWinningCor != null) StopCoroutine(checkWinningCor);
+
         currentMoney = startMoney;
         moneyText.text = currentMoney.ToString();
+        NewCurrentMoney?.Invoke();
         currentLives = startLives;
         livesText.text = startLives.ToString();
         score = 0;
@@ -409,6 +453,12 @@ public class GameController : MonoBehaviour
 
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         foreach(GameObject i in enemies)
+        {
+            i.GetComponent<EnemyController>().DestroyObject(true);
+        }
+
+        GameObject[] airEnemies = GameObject.FindGameObjectsWithTag("AirEnemy");
+        foreach (GameObject i in airEnemies)
         {
             i.GetComponent<EnemyController>().DestroyObject(true);
         }
@@ -437,8 +487,6 @@ public class GameController : MonoBehaviour
     IEnumerator Transition(float alpha)
     {
         int stepsNumber = (int)(transitionTime / Time.fixedDeltaTime); // Количество шагов необходимое для перехода
-        Debug.Log(transitionTime);
-        Debug.Log(stepsNumber);
         float step = 1 / (float)stepsNumber;
         menuTransitionImg.color = new Color(0f, 0f, 0f, alpha);
 

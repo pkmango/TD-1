@@ -19,9 +19,11 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
     private int count; // Счетчик для BlockingTwinkle
     private List<Vector2> wayPoints;
     private bool constrAlowed; // Если true - постройка разрешена
+    private Vector3 cameraPos; // Фиксируем положение камеры
 
     void Start()
     {
+        cameraPos = Camera.main.transform.position;
         constrAlowed = true;
 
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
@@ -42,7 +44,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
     {
         tower = gameController.selectedTower.gameObject;
 
-        if (constrAlowed && tower.GetComponent<TowerController>().costs[0] <= gameController.currentMoney)
+        if (constrAlowed && tower.GetComponent<TowerController>().costs[0] <= gameController.currentMoney && Camera.main.transform.position == cameraPos)
         {
             GameObject newTower = Instantiate(tower, transform.position, tower.transform.rotation);
             // Проверяем блокировку от старта до финиша
@@ -142,7 +144,7 @@ public class ZoneMarkerController : MonoBehaviour, IPointerClickHandler, IPointe
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        //throw new System.NotImplementedException();
+        cameraPos = Camera.main.transform.position;
     }
 
     public void OnPointerUp(PointerEventData eventData)

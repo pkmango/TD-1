@@ -4949,7 +4949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da9acb8965708642afb7ef45ca55a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1.5
+  speed: 1.65
   hp: 500
   passengers: {fileID: 0}
   passenger: 0
@@ -4961,7 +4961,7 @@ MonoBehaviour:
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 1351308849934507991}
-  freezeSpeed: 0.67
+  freezeSpeed: 0.65
   bashEffect: {fileID: 1351072164007663392}
   bashSpeed: 0.1
   debuffTime: 2

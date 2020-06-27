@@ -225,7 +225,7 @@ public class EnemyController : MonoBehaviour
         healthBarGreenSR.sprite = healthBarSprite;
         healthBarGreenSR.color = Color.green;
 
-        currentHp -= dmg;
+        currentHp -= dmg - Mathf.RoundToInt(dmg * gameController.armor);
 
         if (currentHp <= 0)
         {
@@ -235,11 +235,10 @@ public class EnemyController : MonoBehaviour
                 GameObject rewardText = Instantiate(gameController.rewardText, transform.position, Quaternion.identity);
                 rewardText.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Text";
                 rewardText.GetComponentInChildren<TextMesh>().text = "+" + reward.ToString();
-                gameController.score += reward;
-                gameController.scoreText.text = gameController.score.ToString();
+                gameController.ChangeScore(reward);
+                gameController.ChangeMoney(reward);
             }
-            //gameController.NewTower -= ChangePath;
-            gameController.ChangeMoney(reward);
+            
             DestroyObject();
             return null;
         }
@@ -289,7 +288,7 @@ public class EnemyController : MonoBehaviour
         {
             for(int i = 0; i < 3; i++)
             {
-                Vector3 randomPosition = new Vector3(Random.Range(-0.3f, 0.3f), Random.Range(-0.3f, 0.3f), 0f);
+                Vector3 randomPosition = new Vector3(Random.Range(-0.32f, 0.32f), Random.Range(-0.32f, 0.32f), 0f);
                 GameObject newEnemy = Instantiate(passengers, transform.position + randomPosition, transform.rotation);
                 newEnemy.GetComponent<EnemyController>().deviationVector = randomPosition;
             }

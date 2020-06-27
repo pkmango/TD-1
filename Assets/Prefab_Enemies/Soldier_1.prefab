@@ -4977,12 +4977,12 @@ MonoBehaviour:
   air: 0
   reward: 0
   healthBar: {fileID: 0}
-  barLenght: 11
-  barPositionY: 0.27
+  barLenght: 9
+  barPositionY: 0.25
   explosion_vfx: {fileID: 7557699433247402547, guid: ef800a666f6f2a54a8db91b81115fedd,
     type: 3}
   freezeEffect: {fileID: 5142370100615633154}
-  freezeSpeed: 0.7
+  freezeSpeed: 0.65
   bashEffect: {fileID: 728622088891684405}
   bashSpeed: 0.1
   debuffTime: 2

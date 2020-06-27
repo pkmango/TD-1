@@ -135,19 +135,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da9acb8965708642afb7ef45ca55a4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.5
+  speed: 0.8
   hp: 500
   passengers: {fileID: 0}
   passenger: 1
   air: 0
   reward: 0
   healthBar: {fileID: 0}
-  barLenght: 11
-  barPositionY: 0.27
+  barLenght: 9
+  barPositionY: 0.25
   explosion_vfx: {fileID: 7557699433247402547, guid: ef800a666f6f2a54a8db91b81115fedd,
     type: 3}
   freezeEffect: {fileID: 6274412072860310159}
-  freezeSpeed: 0.7
+  freezeSpeed: 0.65
   bashEffect: {fileID: 7771807739141424568}
   bashSpeed: 0.1
   debuffTime: 2

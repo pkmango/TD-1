@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 12161077929412308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.499, y: 0, z: 0}
+  m_LocalPosition: {x: 0.536, y: -0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3613955177519454327}
@@ -154,6 +154,7 @@ GameObject:
   - component: {fileID: 2800938342079991640}
   - component: {fileID: 2800938342079991641}
   - component: {fileID: 7030857506694884932}
+  - component: {fileID: 4697382744432518759}
   m_Layer: 8
   m_Name: Tower_1
   m_TagString: Tower
@@ -249,6 +250,7 @@ MonoBehaviour:
   earthquake: 0
   quakeEffect: {fileID: 0}
   quakeDuration: 0.1
+  quakeSound: {fileID: 0}
   towerName: Rapid Tower
   description: Tower with a rapid-fire gun. Destroys the target with a stream of
     bullets.
@@ -256,21 +258,23 @@ MonoBehaviour:
   darkImgForUp: {fileID: 7573926850022426471}
   upProgress: {fileID: 7387068299982544280}
   level: 0
-  maxLevel: 4
-  costs: 0f0000000f0000001e0000003c00000096000000
-  damages: 0100000002000000040000000800000012000000
+  maxLevel: 5
+  costs: 0f0000000c00000017000000230000004b00000022010000
+  damages: 060000000b00000014000000240000004400000040010000
   ranges:
-  - 2.5
-  - 2.5
-  - 2.5
-  - 2.5
-  - 2.5
+  - 2.4
+  - 2.4
+  - 2.4
+  - 2.4
+  - 2.4
+  - 3
   fireRates:
-  - 4
-  - 4
-  - 4
-  - 4
-  - 5
+  - 3
+  - 3
+  - 3
+  - 3
+  - 3
+  - 4.5
   glow: {fileID: 3430741121648695494}
   buffGlow: {fileID: 834172312686292250}
   circle: {fileID: 61290296402197808}
@@ -280,6 +284,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 590b699d8d48d14488e7dfc3a7d0c783, type: 3}
   - {fileID: 21300000, guid: 120d04bb8c0f3fd41af80ac8a4db9d6d, type: 3}
   - {fileID: 21300000, guid: cf41e49ed757f814689029ca095272a0, type: 3}
+  - {fileID: 21300000, guid: d6c629576fd818f4787c977ff6908559, type: 3}
   progress: {fileID: 7730110368997332435, guid: 200d3e37933783f419d874b83a2b44cd,
     type: 3}
   turret: {fileID: 8143752200374002044}
@@ -291,6 +296,103 @@ MonoBehaviour:
   currentRange: 0
   currentFireRate: 0
   buff: 0
+--- !u!82 &4697382744432518759
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2800938342079991642}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 4d9dd0cccf783514e885c975a3f39845,
+    type: 2}
+  m_audioClip: {fileID: 8300000, guid: 8cbacfe055db94d6c8a9a6deebc96eb6, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.8
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2800938342594793265
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,7 +908,7 @@ Transform:
   m_GameObject: {fileID: 3935806520564732134}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -0.328, y: 0, z: -1}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_Children: []
   m_Father: {fileID: 2800938342079991639}
   m_RootOrder: 0

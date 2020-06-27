@@ -126,7 +126,7 @@ MonoBehaviour:
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 8638812783850510463}
-  freezeSpeed: 0.67
+  freezeSpeed: 0.65
   bashEffect: {fileID: 8618784334023430280}
   bashSpeed: 0.1
   debuffTime: 2

@@ -563,7 +563,7 @@ MonoBehaviour:
   boost: 0
   earthquake: 1
   quakeEffect: {fileID: 504708185082074783}
-  quakeDuration: 0.12
+  quakeDuration: 0.13
   quakeSound: {fileID: 364749545518129468}
   towerName: Bash Tower
   description: The tower deals damage in the area around it and a chance to stun.
@@ -571,21 +571,23 @@ MonoBehaviour:
   darkImgForUp: {fileID: 8275888174921601057}
   upProgress: {fileID: 1577153625064942698}
   level: 0
-  maxLevel: 4
-  costs: 6400000064000000c80000009001000020030000
-  damages: 1400000078000000f0000000e0010000c0030000
+  maxLevel: 5
+  costs: 640000007800000091000000af00000004010000c2010000
+  damages: 3c00000078000000f0000000e0010000c0030000d0070000
   ranges:
-  - 1.5
-  - 1.5
-  - 1.5
-  - 1.5
-  - 1.5
+  - 1.6
+  - 1.6
+  - 1.6
+  - 1.6
+  - 1.6
+  - 1.6
   fireRates:
-  - 1.3
-  - 1.3
-  - 1.3
-  - 1.3
-  - 1.5
+  - 0.65
+  - 0.65
+  - 0.65
+  - 0.65
+  - 0.65
+  - 0.8
   glow: {fileID: 5161478568227492151}
   buffGlow: {fileID: 4656694712780261014}
   circle: {fileID: 7558322778797307073}
@@ -595,6 +597,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 590b699d8d48d14488e7dfc3a7d0c783, type: 3}
   - {fileID: 21300000, guid: 120d04bb8c0f3fd41af80ac8a4db9d6d, type: 3}
   - {fileID: 21300000, guid: cf41e49ed757f814689029ca095272a0, type: 3}
+  - {fileID: 21300000, guid: d6c629576fd818f4787c977ff6908559, type: 3}
   progress: {fileID: 7730110368997332435, guid: 200d3e37933783f419d874b83a2b44cd,
     type: 3}
   turret: {fileID: 1817583757861251213}
@@ -606,6 +609,7 @@ MonoBehaviour:
   currentRange: 0
   currentFireRate: 0
   buff: 0
+  shot: 0
 --- !u!1 &5684632499351328343
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,7 +926,7 @@ Transform:
   m_GameObject: {fileID: 6819569807954974999}
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -0.328, y: 0, z: -1}
-  m_LocalScale: {x: 0.35, y: 0.35, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_Children: []
   m_Father: {fileID: 5684632498969822886}
   m_RootOrder: 0
@@ -1137,6 +1141,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7803680177637732221, guid: c34eb4d76ee904443a1edbc2e1af32f2,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8763383389116075699, guid: c34eb4d76ee904443a1edbc2e1af32f2,
         type: 3}
