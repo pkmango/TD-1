@@ -8,7 +8,7 @@ public class TilemapController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Клик по земле");
+        //Debug.Log("Клик по земле");
         Click?.Invoke();
     }
 

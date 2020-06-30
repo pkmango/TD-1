@@ -41,11 +41,18 @@ public class GameController : MonoBehaviour
     public AudioSource newTowerSound; // Звук при постановке новой башни
     public AudioSource sellTowerSound; //  Звук при продаже башни
     public Text waveNumberText;
+
+    // Система очков
     public int score;
     public Text scoreText;
     public Text gameOverScoreText;
     public Text winScoreText;
+    public Text livesBonusScoreText;
+    public Text difficultyBunusScoreText;
+
     public float armor; // Процент поглащаемого урона
+    public float easy, normal, hard; // Настройки сложности для armor
+    public int difficultyReward; // Награда за сложность
     public float deviation = 0.15f; // Предел случайного отклонения
     public int randomSpawn = 0; // Координата спауна меняется в этих пределах случайным образом
     [HideInInspector]
@@ -78,8 +85,9 @@ public class GameController : MonoBehaviour
     public Text sellText;
     [HideInInspector]
     public TowerController pressedTower; // Башня на поле, на которую кликнул игрок
-
+    [HideInInspector]
     public GameObject lastTower; // Ссылка на последнюю установленную башню
+    [HideInInspector]
     public TowerController selectedTower; // Выбранный через кнопку вид башен
 
     private float ratio; // Соотношение сторон
@@ -92,10 +100,13 @@ public class GameController : MonoBehaviour
     // Корутины, котороми нужно управлять
     private Coroutine spawnWaveCor, tilesMoveCor, checkWinningCor;
     private List<Coroutine> spawnEnemiesCorList = new List<Coroutine>();
+
     private float enemyTilesX; // Начальная позиция enemyTiles по оси х
     private float waveStartTime; // Время когда стартовала текущая волна
     public GameObject placeholderNext; // Заглушка для Next
     private float delayNext = 0.5f; // Задержка после нажатия Next
+    private int difficultyLevel; // Уровень сложности 0:easy, 1:normal, 2:hard
+    
 
     void Awake()
     {
@@ -206,14 +217,15 @@ public class GameController : MonoBehaviour
 
             enemyTiles.transform.localPosition = new Vector2(enemyTilesX - enemyTilesStep * currentWave, enemyTiles.transform.localPosition.y);
 
-            ChangeMoney(nextBtnReward); // Награда за Next
+            int nextReward = nextBtnReward + currentWave / 10; // Добавляем бонус за Next, за каждые 10 волн +1
+            ChangeMoney(nextReward); // Награда за Next
             ChangeScore(currentWave); 
             // Визуализация награды за нажатие Next
             Vector2 rewardPos = Camera.main.ScreenToWorldPoint(startButton.transform.position);
             rewardPos += new Vector2(-1f, 1f); // Смещаем на единицу
             GameObject nextBtnRewardText = Instantiate(rewardText, rewardPos, Quaternion.identity);
             nextBtnRewardText.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Text";
-            nextBtnRewardText.GetComponentInChildren<TextMesh>().text = "+" + nextBtnReward.ToString();
+            nextBtnRewardText.GetComponentInChildren<TextMesh>().text = "+" + nextReward.ToString();
         }
     }
 
@@ -481,7 +493,33 @@ public class GameController : MonoBehaviour
     {
         Time.timeScale = 0f;
         winMenu.SetActive(true);
+        difficultyBunusScoreText.text = (difficultyReward * difficultyLevel).ToString();
+        livesBonusScoreText.text = (currentLives * 20).ToString();
+        score += difficultyReward * difficultyLevel + currentLives * 20;
         winScoreText.text = score.ToString();
+    }
+
+    public void ChangeDifficulty(Toggle toggle)
+    {
+        if (toggle.isOn)
+        {
+            switch (toggle.name)
+            {
+                case "easy":
+                    armor = easy;
+                    difficultyLevel = 0;
+                    break;
+                case "normal":
+                    armor = normal;
+                    difficultyLevel = 1;
+                    break;
+                case "hard":
+                    armor = hard;
+                    difficultyLevel = 2;
+                    break;
+            }
+            Debug.Log(armor);
+        }
     }
 
     IEnumerator Transition(float alpha)

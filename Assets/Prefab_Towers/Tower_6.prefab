@@ -575,12 +575,12 @@ MonoBehaviour:
   costs: 640000007800000091000000af00000004010000c2010000
   damages: 3c00000078000000f0000000e0010000c0030000d0070000
   ranges:
-  - 1.6
-  - 1.6
-  - 1.6
-  - 1.6
-  - 1.6
-  - 1.6
+  - 1.65
+  - 1.65
+  - 1.65
+  - 1.65
+  - 1.65
+  - 1.65
   fireRates:
   - 0.65
   - 0.65
@@ -1205,12 +1205,12 @@ PrefabInstance:
     - target: {fileID: 8763383389116075699, guid: c34eb4d76ee904443a1edbc2e1af32f2,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1
+      value: 1.15
       objectReference: {fileID: 0}
     - target: {fileID: 8763383389116075699, guid: c34eb4d76ee904443a1edbc2e1af32f2,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1
+      value: 1.15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c34eb4d76ee904443a1edbc2e1af32f2, type: 3}

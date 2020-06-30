@@ -49,6 +49,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public float currentRange, currentFireRate;
     private TilemapController ground;
     private AudioController audioController;
+    private Coroutine fireCor, fireEarthquakeCor; // Корутины для выстрелов
     public float buff; // модификатор характеристик (процент/100)
 
     public bool shot; // для теста
@@ -90,7 +91,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
         if (earthquake)
         {
-            StartCoroutine(FireEarthquake());
+            fireEarthquakeCor = StartCoroutine(FireEarthquake());
         }
         else if (boost)
         {
@@ -99,7 +100,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         }
         else
         {
-            StartCoroutine(Fire());
+            fireCor = StartCoroutine(Fire());
         }
     }
 
@@ -138,6 +139,8 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             shot = !shot;
             yield return new WaitForSeconds(1f / currentFireRate);
         }
+
+        Debug.Log("все-таки это случилось");
     }
 
     IEnumerator FireEarthquake()
@@ -171,8 +174,8 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
                     {
                         if (i.tag == "AirEnemy") continue;
 
-                        // Вероятность оглушения 11%
-                        if (Random.value < 0.11f)
+                        // Вероятность оглушения 17.5%
+                        if (Random.value < 0.175f)
                         {
                             i.GetComponent<EnemyController>().Health(currentDamage, false, true);
                         }
@@ -240,6 +243,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public void Upgrade(GameObject upgradingMenu)
     {
         upgrading = true;
+        if (earthquake) StopCoroutine(fireEarthquakeCor);
         turret.GetComponent<CircleCollider2D>().radius = 0.1f;
         upgradingMenu.SetActive(true);
 
@@ -295,6 +299,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         }
 
         upgrading = false;
+        if (earthquake) fireEarthquakeCor = StartCoroutine(FireEarthquake());
         darkImgForUp.SetActive(false);
         upgradingMenu.SetActive(false);
 
@@ -373,7 +378,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Нажатие на башню");
+        //Debug.Log("Нажатие на башню");
 
         GameObject[] towerButtons = GameObject.FindGameObjectsWithTag("TowerButton");
         foreach (GameObject button in towerButtons)
@@ -454,5 +459,15 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         gameController.NewCurrentMoney -= SetUpgradeButton;
         Destroy(upgradeProgress.gameObject);
         Destroy(gameObject);
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log(gameObject.name + " отключена");
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log(gameObject.name + " включена");
     }
 }
