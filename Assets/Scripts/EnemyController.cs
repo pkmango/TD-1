@@ -88,6 +88,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         healthBar.transform.position = transform.position;
+
         if (!air)
         {
             Movement();
@@ -97,8 +98,6 @@ public class EnemyController : MonoBehaviour
             transform.rotation = Quaternion.AngleAxis(-90f, Vector3.forward);
             MovementForAir();
         }
-        
-        
     }
 
     void MovementForAir()
@@ -200,7 +199,9 @@ public class EnemyController : MonoBehaviour
             Destroy(healthBar);
         }
         healthBar = new GameObject("healthBar");
+        //healthBar.transform.parent = transform;
         healthBar.transform.position = transform.position;
+        //healthBar.transform.rotation = transform.rotation;
         GameObject greenBar = new GameObject("greenBar");
         GameObject redBar = new GameObject("redBar");
         greenBar.transform.parent = healthBar.transform;

@@ -21,25 +21,16 @@ public class AudioController : MonoBehaviour
 
     void Start()
     {
-        soundsKey = PlayerPrefs.GetInt("soundsKey", 1);
-        SetSoundsAfterLoad();
-        musicKey = PlayerPrefs.GetInt("musicKey", 1);
-        SetMusicAfterLoad();
+        SetAudio();
     }
 
-    //private void FixedUpdate()
-    //{
-    //    foreach(AudioSource i in soundsList)
-    //    {
-    //        if (!i.isPlaying)
-    //        {
-    //            soundsList.Remove(i);
-    //            Debug.Log("удаление");
-    //        }
-                
-    //        break;
-    //    }
-    //}
+    private void SetAudio()
+    {
+        soundsKey = PlayerPrefs.GetInt("soundsKey", 1);
+        SetSounds();
+        musicKey = PlayerPrefs.GetInt("musicKey", 1);
+        SetMusic();
+    }
 
     public void PlaySound(AudioSource sound)
     {
@@ -67,7 +58,7 @@ public class AudioController : MonoBehaviour
         soundsList.Remove(sound);
     }
 
-    public void SetSoundsAfterLoad()
+    public void SetSounds()
     {
         if (soundsKey == 1)
         {
@@ -83,7 +74,7 @@ public class AudioController : MonoBehaviour
         }
     }
 
-    public void SetMusicAfterLoad()
+    public void SetMusic()
     {
         if (musicKey == 1)
         {
@@ -136,5 +127,15 @@ public class AudioController : MonoBehaviour
             musicKey = 1;
         }
         PlayerPrefs.SetInt("musicKey", musicKey);
+    }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        Debug.Log("OnApplicationPause = " + pauseStatus);
+
+        if (!pauseStatus)
+        {
+            SetAudio();
+        }
     }
 }

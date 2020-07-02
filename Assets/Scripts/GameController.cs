@@ -110,6 +110,9 @@ public class GameController : MonoBehaviour
 
     void Awake()
     {
+        // Чтобы экран не гас
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
         // Вычисление orthographicSize, необходимого для данного устройства
         ratio = (float) Screen.height / Screen.width;
         currentHeight = fixWidth * ratio;
