@@ -90,6 +90,9 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public TowerController selectedTower; // Выбранный через кнопку вид башен
 
+    public GameObject placeholderNext; // Заглушка для Next
+    public GameObject attackDirection; // Анимированные стрелочки, которые показывают направление атаки
+
     private float ratio; // Соотношение сторон
     private float currentHeight; // Текущая высота
     private float ortSize; // Необходимый orthographicSize, чтобы ширина поля осталась фиксированная (меняется высота)
@@ -103,9 +106,8 @@ public class GameController : MonoBehaviour
 
     private float enemyTilesX; // Начальная позиция enemyTiles по оси х
     private float waveStartTime; // Время когда стартовала текущая волна
-    public GameObject placeholderNext; // Заглушка для Next
     private float delayNext = 0.5f; // Задержка после нажатия Next
-    private int difficultyLevel; // Уровень сложности 0:easy, 1:normal, 2:hard
+    private int difficultyLevel = 1; // Уровень сложности 0:easy, 1:normal, 2:hard
     
 
     void Awake()
@@ -385,7 +387,21 @@ public class GameController : MonoBehaviour
         startButton.SetActive(false);
         spawnWaveCor = StartCoroutine(SpawnWaves());
         tilesMoveCor = StartCoroutine(EnemyTilesMove());
+        Destroy(attackDirection);
     }
+
+    //public void Rewind()
+    //{
+    //    if(Time.timeScale == 1f)
+    //    {
+    //        Time.timeScale = 1.5f;
+    //    }
+    //    else
+    //    {
+    //        Time.timeScale = 1f;
+    //    }
+        
+    //}
 
     public void Pause()
     {

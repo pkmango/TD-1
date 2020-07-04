@@ -10,7 +10,7 @@ public class FPSCounter : MonoBehaviour
     void Start()
     {
         style.normal.textColor = Color.white;
-        style.fontSize = 32;
+        style.fontSize = 26;
         style.fontStyle = FontStyle.Bold;
     }
 

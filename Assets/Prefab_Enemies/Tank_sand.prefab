@@ -120,7 +120,7 @@ MonoBehaviour:
   reward: 1
   healthBar: {fileID: 0}
   barLenght: 15
-  barPositionY: 0.38
+  barPositionY: 0.39
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 0}

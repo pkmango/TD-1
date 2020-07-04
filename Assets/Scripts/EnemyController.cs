@@ -41,6 +41,11 @@ public class EnemyController : MonoBehaviour
     [HideInInspector]
     public Vector2 deviationVector; // Можно задать случайное отклонение от заданное траектории движения 
 
+    //private GameObject bar;
+    private GameObject greenBar;
+    private GameObject redBar;
+    private float leftBounds;
+
     void Start()
     {
         target = GameObject.FindWithTag("Target");
@@ -66,7 +71,7 @@ public class EnemyController : MonoBehaviour
         }
 
         currentHp = hp;
-        healthBar = Health();
+        healthBar = HealthBar();
 
         //transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
@@ -192,18 +197,13 @@ public class EnemyController : MonoBehaviour
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
-    public GameObject Health(int dmg = 0, bool freeze = false, bool bash = false)
+    private GameObject HealthBar()
     {
-        if (dmg != 0)
-        {
-            Destroy(healthBar);
-        }
         healthBar = new GameObject("healthBar");
-        //healthBar.transform.parent = transform;
+        greenBar = new GameObject("greenBar");
+        redBar = new GameObject("redBar");
+
         healthBar.transform.position = transform.position;
-        //healthBar.transform.rotation = transform.rotation;
-        GameObject greenBar = new GameObject("greenBar");
-        GameObject redBar = new GameObject("redBar");
         greenBar.transform.parent = healthBar.transform;
         redBar.transform.parent = healthBar.transform;
         Sprite healthBarSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 4f, 4f), new Vector2(0f, 0.5f));
@@ -216,7 +216,7 @@ public class EnemyController : MonoBehaviour
         healthBarRedSR.color = Color.red;
         redBar.transform.localScale = new Vector3(barLenght, 1f, 1f);
         // Левая граница необходимая для выравнивания healthBar
-        float leftBounds = -redBar.GetComponent<SpriteRenderer>().bounds.extents.x;
+        leftBounds = -redBar.GetComponent<SpriteRenderer>().bounds.extents.x;
         redBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
 
         // Зеленая полоска
@@ -225,6 +225,16 @@ public class EnemyController : MonoBehaviour
         healthBarGreenSR.sortingOrder = 5;
         healthBarGreenSR.sprite = healthBarSprite;
         healthBarGreenSR.color = Color.green;
+        greenBar.transform.localScale = new Vector3(barLenght, 1f, 1f);
+        greenBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
+
+        return healthBar;
+    }
+
+    public void Health(int dmg = 0, bool freeze = false, bool bash = false)
+    {
+        if (currentHp <= 0)
+            return;
 
         currentHp -= dmg - Mathf.RoundToInt(dmg * gameController.armor);
 
@@ -241,7 +251,7 @@ public class EnemyController : MonoBehaviour
             }
             
             DestroyObject();
-            return null;
+            return;
         }
 
         if (freeze)
@@ -260,7 +270,7 @@ public class EnemyController : MonoBehaviour
         greenBar.transform.localScale = new Vector3(newGreenBarLenght, 1f, 1f);
         greenBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
 
-        return healthBar;
+        //return healthBar;
     }
 
     private IEnumerator Freeze()
