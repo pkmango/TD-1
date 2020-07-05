@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 2384941262632770952}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 1}
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_Children:
   - {fileID: 1116624509879797693}
   - {fileID: 1524575955717379946}
@@ -121,7 +121,7 @@ MonoBehaviour:
   air: 0
   reward: 1
   healthBar: {fileID: 0}
-  barLenght: 15
+  barLenght: 14
   barPositionY: 0.39
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}

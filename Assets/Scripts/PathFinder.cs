@@ -7,8 +7,15 @@ public class PathFinder : MonoBehaviour
     public List<Vector2> PathToTarget;
     public List<Node> CheckedNodes = new List<Node>();
     public List<Node> FreeNodes = new List<Node>();
-    private List<Node> WaitingNodes = new List<Node>();
     public LayerMask SolidLayer;
+    // Границы 
+    [Header("x-axis borders")]
+    public Vector2 bordersX = new Vector2(-4, 4);
+    [Header("y-axis borders")]
+    public Vector2 bordersY = new Vector2(-4, 14);
+
+    private List<Node> WaitingNodes = new List<Node>();
+    private bool walkable; // Проходимость клетки
 
     public List<Vector2> GetPath(Vector2 start, Vector2 target)
     {
@@ -34,7 +41,18 @@ public class PathFinder : MonoBehaviour
                 return CalculatePathFromNode(nodeToCheck);
             }
 
-            var walkable = !Physics2D.OverlapCircle(nodeToCheck.Position, 0.1f, SolidLayer);
+            if (nodeToCheck.Position.x < bordersX.x && nodeToCheck.Position.x > bordersX.y && nodeToCheck.Position.y < bordersY.x && nodeToCheck.Position.y > bordersY.y)
+            {
+                walkable = false;
+                Debug.Log("здесь");
+            }
+            else
+            {
+                walkable = !Physics2D.OverlapPoint(nodeToCheck.Position, SolidLayer);
+            }
+
+            
+
             if(!walkable)
             {
                 WaitingNodes.Remove(nodeToCheck);

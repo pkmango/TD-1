@@ -108,7 +108,8 @@ public class GameController : MonoBehaviour
     private float waveStartTime; // Время когда стартовала текущая волна
     private float delayNext = 0.5f; // Задержка после нажатия Next
     private int difficultyLevel = 1; // Уровень сложности 0:easy, 1:normal, 2:hard
-    
+
+    //private float tilesMoveWait = 0.04f;
 
     void Awake()
     {

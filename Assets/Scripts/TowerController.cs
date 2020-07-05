@@ -139,8 +139,6 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
             shot = !shot;
             yield return new WaitForSeconds(1f / currentFireRate);
         }
-
-        Debug.Log("все-таки это случилось");
     }
 
     IEnumerator FireEarthquake()
@@ -172,7 +170,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
                     foreach (Collider2D i in splashedEnemies)
                     {
-                        if (i.tag == "AirEnemy") continue;
+                        if (i.CompareTag("AirEnemy")) continue;
 
                         // Вероятность оглушения 17.5%
                         if (Random.value < 0.175f)

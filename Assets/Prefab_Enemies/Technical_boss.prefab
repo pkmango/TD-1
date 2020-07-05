@@ -4864,7 +4864,7 @@ Transform:
   m_GameObject: {fileID: 4916498373476260384}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1, y: 1.1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_Children:
   - {fileID: 7664253943493558293}
   - {fileID: 8073700175388971202}
@@ -4937,6 +4937,8 @@ MonoBehaviour:
   SolidLayer:
     serializedVersion: 2
     m_Bits: 256
+  bordersX: {x: -4, y: 4}
+  bordersY: {x: -4, y: 14}
 --- !u!114 &4916498373476260412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4956,7 +4958,7 @@ MonoBehaviour:
   air: 0
   reward: 0
   healthBar: {fileID: 0}
-  barLenght: 15
+  barLenght: 14
   barPositionY: 0.42
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}

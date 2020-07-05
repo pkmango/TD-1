@@ -5038,8 +5038,8 @@ MonoBehaviour:
   air: 1
   reward: 0
   healthBar: {fileID: 0}
-  barLenght: 15
-  barPositionY: 0.35
+  barLenght: 14
+  barPositionY: 0.36
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 1274250417415194254}
