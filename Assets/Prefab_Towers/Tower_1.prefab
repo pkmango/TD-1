@@ -246,6 +246,8 @@ MonoBehaviour:
   - {fileID: 6335408186119493231}
   lockOnTarget: {fileID: 7470094177153075302}
   bullet: {fileID: 2526149134785684282, guid: b72c44fa942f7824793cd6a840a3bac6, type: 3}
+  shotSound: {fileID: 2233908241577303692, guid: 8a44f16bed9ed054eb5a13c7dc646210,
+    type: 3}
   boost: 0
   earthquake: 0
   quakeEffect: {fileID: 0}

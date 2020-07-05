@@ -8,6 +8,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public Transform[] spawnPoints;
     public LockOnTarget lockOnTarget;
     public GameObject bullet;
+    public AudioSource shotSound;
     public bool boost; //Башня типа boost?
     public bool earthquake; // Башня типа earthquake?
     public GameObject quakeEffect;
@@ -128,7 +129,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
                 foreach(Transform i in spawnPoints)
                 {
                     GameObject newBullet = Instantiate(bullet, i.position, i.rotation);
-                    audioController.PlaySound(GetComponent<AudioSource>());
+                    audioController.PlaySound(shotSound);
                     newBullet.GetComponent<BulletController>().targetPosition = lockOnTarget.currentTarget;
                     newBullet.GetComponent<BulletController>().damage = currentDamage;
                     if (spawnPoints.Length > 1) yield return new WaitForSeconds(0.19f);
@@ -445,6 +446,8 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public void DestroyThisTower()
     {
         StopAllCoroutines();
+        shotSound.transform.SetParent(audioController.transform); // Отделяем звук выстрела, для исключения ошибки
+        Destroy(shotSound.gameObject, 1f); // Удаляем через 1с
 
         if (boost)
         {
