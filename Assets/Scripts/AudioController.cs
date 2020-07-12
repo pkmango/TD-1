@@ -38,8 +38,6 @@ public class AudioController : MonoBehaviour
 
         foreach(AudioSource i in soundsList)
         {
-            //if (sound == null) return;
-
             if (sound.clip == i.clip)
             {
                 soundsCount++;

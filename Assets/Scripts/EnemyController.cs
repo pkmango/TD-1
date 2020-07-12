@@ -36,7 +36,7 @@ public class EnemyController : MonoBehaviour
     private List<Vector2> wayPoints;
     private GameController gameController;
     private Vector2 nextPosition = Vector2.zero;
-    private GameObject target;
+    private Transform target;
     private bool changePath = false; // Нужна смена пути 
     [HideInInspector]
     public Vector2 deviationVector; // Можно задать случайное отклонение от заданное траектории движения 
@@ -48,12 +48,12 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-        target = GameObject.FindWithTag("Target");
         GameObject gameControllerObject = GameObject.FindWithTag("GameController");
         if (gameControllerObject != null)
         {
             gameController = gameControllerObject.GetComponent<GameController>();
-            if(!air) gameController.NewTower += ChangePath;
+            target = gameController.target;
+            if (!air) gameController.NewTower += ChangePath;
 
             // Узнаем значение награды и hp в настройках текущей волны
             Wave currentWave = gameController.waves[gameController.currentWave];
@@ -73,7 +73,6 @@ public class EnemyController : MonoBehaviour
         currentHp = hp;
         healthBar = HealthBar();
 
-        //transform.position = new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
         currentPosition = transform.position;
         if (!air)
         {
@@ -84,8 +83,7 @@ public class EnemyController : MonoBehaviour
         else
         {
             currentPosition += deviationVector;
-            nextPosition = new Vector2 (currentPosition.x, target.transform.position.y + deviationVector.y);
-            //nextPosition += deviationVector;
+            nextPosition = new Vector2 (currentPosition.x, target.position.y + deviationVector.y);
         }
         
     }
@@ -123,7 +121,7 @@ public class EnemyController : MonoBehaviour
 
     void NewPath()
     {
-        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(currentPosition, target.transform.position);
+        wayPoints = gameObject.GetComponent<PathFinder>().GetPath(currentPosition, target.position);
 
         // Применяем значение отклонения
         for (int i = 0; i < wayPoints.Count; i++)
@@ -138,10 +136,8 @@ public class EnemyController : MonoBehaviour
         else
         {
             Debug.Log("Блокировка пути!");
-            //gameController.NewTower -= ChangePath;
             DestroyObject();
         }
-        //Debug.Log("Событие!");
     }
 
     void Movement()
@@ -161,7 +157,6 @@ public class EnemyController : MonoBehaviour
         {
             if(currentPoint == 0)
             {
-                //gameController.NewTower -= ChangePath;
                 gameController.SubtractLife();
                 DestroyObject();
                 return;
@@ -269,8 +264,6 @@ public class EnemyController : MonoBehaviour
         float newGreenBarLenght = barLenght * currentHp / hp; // Вычисляем новую длину полоски здоровья при получении урона
         greenBar.transform.localScale = new Vector3(newGreenBarLenght, 1f, 1f);
         greenBar.transform.localPosition = new Vector2(leftBounds, barPositionY);
-
-        //return healthBar;
     }
 
     private IEnumerator Freeze()

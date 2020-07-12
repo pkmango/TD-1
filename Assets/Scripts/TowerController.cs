@@ -105,7 +105,7 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (buffGlow != null)
         {
@@ -446,8 +446,12 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     public void DestroyThisTower()
     {
         StopAllCoroutines();
-        shotSound.transform.SetParent(audioController.transform); // Отделяем звук выстрела, для исключения ошибки
-        Destroy(shotSound.gameObject, 1f); // Удаляем через 1с
+
+        if (shotSound != null)
+        {
+            shotSound.transform.SetParent(audioController.transform); // Отделяем звук выстрела, для исключения ошибки
+            Destroy(shotSound.gameObject, 1f); // Удаляем через 1с
+        }
 
         if (boost)
         {

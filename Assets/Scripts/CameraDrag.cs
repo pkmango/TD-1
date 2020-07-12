@@ -58,8 +58,6 @@ public class CameraDrag : MonoBehaviour//, IDragHandler, IBeginDragHandler
             {
                 dragTime = Time.time;
                 allowDrag = true;
-                //_groundPlane.Raycast(mouseRay, out distanceToIntersection);
-                //_dragOrigin = mouseRay.GetPoint(distanceToIntersection);
             }
             else
             {

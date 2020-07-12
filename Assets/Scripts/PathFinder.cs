@@ -5,16 +5,19 @@ using UnityEngine;
 public class PathFinder : MonoBehaviour
 {
     public List<Vector2> PathToTarget;
-    public List<Node> CheckedNodes = new List<Node>();
-    public List<Node> FreeNodes = new List<Node>();
+    public List<Node> CheckedNodes;
+    public List<Node> FreeNodes;
     public LayerMask SolidLayer;
     // Границы 
     [Header("x-axis borders")]
-    public Vector2 bordersX = new Vector2(-4, 4);
+    private Vector2 bordersX = new Vector2(-4, 4);
     [Header("y-axis borders")]
-    public Vector2 bordersY = new Vector2(-4, 14);
+    private Vector2 bordersY = new Vector2(-4, 14);
+    // Свободная от башен территория
+    private Vector2 startFreeAreaX = new Vector2(-5, 5);
+    private Vector2 startFreeAreaY = new Vector2(8, 15);
 
-    private List<Node> WaitingNodes = new List<Node>();
+    private List<Node> WaitingNodes;
     private bool walkable; // Проходимость клетки
 
     public List<Vector2> GetPath(Vector2 start, Vector2 target)
@@ -22,6 +25,7 @@ public class PathFinder : MonoBehaviour
         PathToTarget = new List<Vector2>();
         CheckedNodes = new List<Node>();
         WaitingNodes = new List<Node>();
+        FreeNodes = new List<Node>();
 
         Vector2 StartPosition = new Vector2(Mathf.Round(start.x), Mathf.Round(start.y));
         Vector2 TargetPosition = new Vector2(Mathf.Round(target.x), Mathf.Round(target.y));
@@ -41,14 +45,20 @@ public class PathFinder : MonoBehaviour
                 return CalculatePathFromNode(nodeToCheck);
             }
 
-            if (nodeToCheck.Position.x < bordersX.x && nodeToCheck.Position.x > bordersX.y && nodeToCheck.Position.y < bordersY.x && nodeToCheck.Position.y > bordersY.y)
+            if (nodeToCheck.Position.x < bordersX.x || nodeToCheck.Position.x > bordersX.y || nodeToCheck.Position.y < bordersY.x || nodeToCheck.Position.y > bordersY.y)
             {
                 walkable = false;
-                Debug.Log("здесь");
+                //Debug.Log("ВЫШЕЛ ЗА ГРАНИЦЫ");
+            }
+            else if (nodeToCheck.Position.x > startFreeAreaX.x && nodeToCheck.Position.x < startFreeAreaX.y && nodeToCheck.Position.y > startFreeAreaY.x && nodeToCheck.Position.y < startFreeAreaY.y)
+            {
+                walkable = true;
+                //Debug.Log("СВОБОДНАЯ ЗОНА");
             }
             else
             {
                 walkable = !Physics2D.OverlapPoint(nodeToCheck.Position, SolidLayer);
+                //Debug.Log(j + " " + walkable.ToString());
             }
 
             
@@ -78,7 +88,7 @@ public class PathFinder : MonoBehaviour
         return PathToTarget;
     }
 
-    public List<Vector2> CalculatePathFromNode(Node node)
+    private List<Vector2> CalculatePathFromNode(Node node)
     {
         var path = new List<Vector2>();
         Node currentNode = node;
@@ -112,6 +122,7 @@ public class PathFinder : MonoBehaviour
             node.Position.x, node.Position.y+1),
             node.TargetPosition,
             node));
+
         return Neighbours;
     }
 

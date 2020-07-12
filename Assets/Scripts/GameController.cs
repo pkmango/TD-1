@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     public float spawnWait; // Пауза между спауном врагов
     public float waveWait; // Пауза между волнами
     public GameObject spawnPoint; // Точка спауна
+    public Transform target; // Точка-цель 
     public GameObject rewardText; // При уничтожении врага показывается текст с суммой награды
     public Image menuTransitionImg; // Черная заглушка для перехода между меню
     public float transitionTime = 0.5f; 
@@ -109,7 +110,8 @@ public class GameController : MonoBehaviour
     private float delayNext = 0.5f; // Задержка после нажатия Next
     private int difficultyLevel = 1; // Уровень сложности 0:easy, 1:normal, 2:hard
 
-    //private float tilesMoveWait = 0.04f;
+    private GameObject[] enemyIcons; // Иконки врагов
+    private int enabledIconsNumber = 3; // Количество отображаемых иконок врагов
 
     void Awake()
     {
@@ -139,6 +141,7 @@ public class GameController : MonoBehaviour
             ground.Click += HideConstrZone;
         }
 
+        enemyIcons = new GameObject[waves.Length];
         CreateWaveIcons();
     }
 
@@ -146,7 +149,10 @@ public class GameController : MonoBehaviour
     {
         if (Application.platform == RuntimePlatform.Android && Input.GetKeyDown(KeyCode.Escape))
         {
-            Pause();
+            if(!gameOverMenu.activeInHierarchy && !winMenu.activeInHierarchy)
+            {
+                Pause();
+            }
         }
     }
 
@@ -156,8 +162,11 @@ public class GameController : MonoBehaviour
 
         for (int i = 0; i<waves.Length; i++)
         {
-            GameObject icon = Instantiate(waves[i].waveTile, enemyTiles.transform);
-            icon.transform.localPosition = new Vector2(enemyTilesStep * i, 0f);
+            enemyIcons[i] = Instantiate(waves[i].waveTile, enemyTiles.transform);
+            enemyIcons[i].transform.localPosition = new Vector2(enemyTilesStep * i, 0f);
+
+            if (i > enabledIconsNumber)
+                enemyIcons[i].SetActive(false);
         }
     }
 
@@ -182,6 +191,11 @@ public class GameController : MonoBehaviour
             waveStartTime = Time.time;
             currentWave = i;
             waveNumberText.text = (currentWave + 1).ToString() + "/" + waves.Length.ToString();
+            // Для оптимизации отключаем лишние иконки
+            if (currentWave + enabledIconsNumber < enemyIcons.Length)
+                enemyIcons[currentWave + enabledIconsNumber].SetActive(true);
+            if (currentWave - 1 >= 0)
+                enemyIcons[currentWave -1].SetActive(false);
 
             spawnEnemiesCorList.Add(StartCoroutine(SpawnEnemies(i)));
 
@@ -280,6 +294,11 @@ public class GameController : MonoBehaviour
 
     public void SubtractLife()
     {
+        GameObject subtractLifeText = Instantiate(rewardText, target.position, Quaternion.identity);
+        subtractLifeText.GetComponentInChildren<MeshRenderer>().sortingLayerName = "Text";
+        subtractLifeText.GetComponentInChildren<TextMesh>().text = "-1";
+        subtractLifeText.GetComponentInChildren<TextMesh>().color = new Color(0.9f, 0f, 0f);
+
         currentLives--;
         livesText.text = currentLives.ToString();
         missSound.Play();
