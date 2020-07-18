@@ -28,7 +28,8 @@ public class EnemyController : MonoBehaviour
     private Coroutine bashCor;
     public float debuffTime = 2f; // Длительность дебафа скорости
 
-    private int currentHp;
+    [HideInInspector]
+    public int currentHp;
     private Vector2 currentPosition;
     private float progress = 0f;
     private int currentPoint;
@@ -55,11 +56,7 @@ public class EnemyController : MonoBehaviour
             target = gameController.target;
             if (!air) gameController.NewTower += ChangePath;
 
-            // Узнаем значение награды и hp в настройках текущей волны
-            Wave currentWave = gameController.waves[gameController.currentWave];
-            reward = currentWave.reward;
-            hp = currentWave.hp;
-            if (passenger) hp /= 2;
+            //if (passenger) hp /= 2;
 
             // Узнаем значения отклонения
             if (deviationVector == Vector2.zero)
@@ -290,12 +287,7 @@ public class EnemyController : MonoBehaviour
 
         if (passengers != null && currentPoint > 0 && !restart)
         {
-            for(int i = 0; i < 3; i++)
-            {
-                Vector3 randomPosition = new Vector3(Random.Range(-0.32f, 0.32f), Random.Range(-0.32f, 0.32f), 0f);
-                GameObject newEnemy = Instantiate(passengers, transform.position + randomPosition, transform.rotation);
-                newEnemy.GetComponent<EnemyController>().deviationVector = randomPosition;
-            }
+            gameController.spawnPassangersCor = gameController.StartCoroutine(gameController.SpawnPassengers(passengers, transform.position, transform.rotation, hp));
         }
 
         StopAllCoroutines();

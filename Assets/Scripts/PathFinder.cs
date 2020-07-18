@@ -36,9 +36,10 @@ public class PathFinder : MonoBehaviour
         CheckedNodes.Add(startNode);
         WaitingNodes.AddRange(GetNeighbourNodes(startNode));
         int j = 0;
-        while(WaitingNodes.Count > 0)
+        while (WaitingNodes.Count > 0)
         {
-            Node nodeToCheck = WaitingNodes.Where(x => x.F == WaitingNodes.Min(y => y.F)).FirstOrDefault();
+            //Node nodeToCheck = WaitingNodes.Where(x => x.F == WaitingNodes.Min(y => y.F)).FirstOrDefault();
+            Node nodeToCheck = SetNodeToCheck();
 
             if (nodeToCheck.Position == TargetPosition)
             {
@@ -63,29 +64,67 @@ public class PathFinder : MonoBehaviour
 
             
 
-            if(!walkable)
+            if (!walkable)
             {
                 WaitingNodes.Remove(nodeToCheck);
                 CheckedNodes.Add(nodeToCheck);
             }
-            else if(walkable)
+            else
             {
                 WaitingNodes.Remove(nodeToCheck);
-                if(!CheckedNodes.Where(x => x.Position == nodeToCheck.Position).Any()) {
+                //if (!CheckedNodes.Where(x => x.Position == nodeToCheck.Position).Any())
+                //{
+                //    CheckedNodes.Add(nodeToCheck);
+                //    WaitingNodes.AddRange(GetNeighbourNodes(nodeToCheck));
+                //}
+                if (!MatchSearch(CheckedNodes, nodeToCheck.Position))
+                {
                     CheckedNodes.Add(nodeToCheck);
                     WaitingNodes.AddRange(GetNeighbourNodes(nodeToCheck));
-                } 
+                }
             }
+
             j++;
+
             if (j > 1000)
             {
                 Debug.Log("Превышен лимит вычислений WaitingNodes.Count = " + WaitingNodes.Count);
                 break;
             }
         }
+
         FreeNodes = CheckedNodes;
         Debug.Log("путь не обнаружен");
         return PathToTarget;
+    }
+
+    private Node SetNodeToCheck()
+    {
+        Node minF = WaitingNodes[0];
+
+        for (int i = 1; i < WaitingNodes.Count; i++)
+        {
+            if (WaitingNodes[i].F < minF.F)
+                minF = WaitingNodes[i];
+        }
+
+        return minF;
+    }
+
+    private bool MatchSearch (List<Node> list, Vector2 pos)
+    {
+        bool success = false;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i].Position == pos)
+            {
+                success = true;
+                break;
+            }  
+        }
+
+        return success;
     }
 
     private List<Vector2> CalculatePathFromNode(Node node)

@@ -620,6 +620,7 @@ MonoBehaviour:
   spawnPoints: []
   lockOnTarget: {fileID: 0}
   bullet: {fileID: 131003257551420200, guid: c739959d1874e4244b48235463f735dd, type: 3}
+  shotSound: {fileID: 0}
   boost: 1
   earthquake: 0
   quakeEffect: {fileID: 0}
@@ -632,8 +633,8 @@ MonoBehaviour:
   upProgress: {fileID: 4722060269241437300}
   level: 0
   maxLevel: 5
-  costs: 640000006400000064000000640000006400000064000000
-  damages: 0a000000140000001e00000028000000320000003c000000
+  costs: 5a0000005a0000005a0000005a0000005a00000078000000
+  damages: 0a000000140000001e000000280000003200000041000000
   ranges:
   - 1.5
   - 1.5

@@ -103,6 +103,7 @@ public class GameController : MonoBehaviour
     public int currentWave = 0;
     // Корутины, котороми нужно управлять
     private Coroutine spawnWaveCor, tilesMoveCor, checkWinningCor;
+    public Coroutine spawnPassangersCor;
     private List<Coroutine> spawnEnemiesCorList = new List<Coroutine>();
 
     private float enemyTilesX; // Начальная позиция enemyTiles по оси х
@@ -129,6 +130,7 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        armor = normal;
         moneyText.text = currentMoney.ToString();
         livesText.text = startLives.ToString();
         currentLives = startLives;
@@ -176,8 +178,11 @@ public class GameController : MonoBehaviour
         {
             float deltaX = (enemyTilesStep / waveWait) * Time.fixedDeltaTime;
             enemyTiles.transform.localPosition = new Vector2(enemyTiles.transform.localPosition.x - deltaX, enemyTiles.transform.localPosition.y);
+
             // Таймер для отсчета времени до следующей волны
-            clockText.text = Mathf.Round(waveWait + waveStartTime - Time.time).ToString();
+            float newTime = Mathf.Round(waveWait + waveStartTime - Time.time);
+            if (newTime >= 0f && clockText.text != newTime.ToString()) clockText.text = newTime.ToString();
+
             yield return new WaitForFixedUpdate();
         }
     }
@@ -213,6 +218,9 @@ public class GameController : MonoBehaviour
         for (int j = 0; j < waves[i].enemies.Length; j++)
         {
             Vector3 randomSpawnPosition = spawnPoint.transform.position + new Vector3(Random.Range(-_randomSpawn, _randomSpawn), 0f, 0f);
+            EnemyController enemyController = waves[i].enemies[j].GetComponent<EnemyController>();
+            enemyController.reward = waves[i].reward;
+            enemyController.hp = waves[i].hp;
             Instantiate(waves[i].enemies[j], randomSpawnPosition, Quaternion.identity);
 
             yield return new WaitForSeconds(wait);
@@ -221,6 +229,20 @@ public class GameController : MonoBehaviour
             {
                 checkWinningCor = StartCoroutine(CheckWinningCondition());
             }
+        }
+    }
+
+    public IEnumerator SpawnPassengers(GameObject passenger, Vector3 pos, Quaternion rot, int hp)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3 randomPosition = new Vector3(Random.Range(-0.32f, 0.32f), Random.Range(-0.32f, 0.32f), 0f);
+            EnemyController enemyController = passenger.GetComponent<EnemyController>();
+            enemyController.deviationVector = randomPosition;
+            enemyController.hp = hp / 2;
+            Instantiate(passenger, pos + randomPosition, rot);
+
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -410,19 +432,6 @@ public class GameController : MonoBehaviour
         Destroy(attackDirection);
     }
 
-    //public void Rewind()
-    //{
-    //    if(Time.timeScale == 1f)
-    //    {
-    //        Time.timeScale = 1.5f;
-    //    }
-    //    else
-    //    {
-    //        Time.timeScale = 1f;
-    //    }
-        
-    //}
-
     public void Pause()
     {
         Time.timeScale = 0f;
@@ -475,14 +484,15 @@ public class GameController : MonoBehaviour
     // Обнуление всего для нового старта
     private void Zeroing()
     {
-        if(spawnWaveCor != null) StopCoroutine(spawnWaveCor);
+        if (spawnWaveCor != null) StopCoroutine(spawnWaveCor);
         foreach(Coroutine i in spawnEnemiesCorList)
         {
             if (i != null) StopCoroutine(i);
         }
         spawnEnemiesCorList.Clear();
         if (tilesMoveCor != null) StopCoroutine(tilesMoveCor);
-        if(checkWinningCor != null) StopCoroutine(checkWinningCor);
+        if (checkWinningCor != null) StopCoroutine(checkWinningCor);
+        if (spawnPassangersCor != null) StopCoroutine(spawnPassangersCor);
 
         currentMoney = startMoney;
         moneyText.text = currentMoney.ToString();
@@ -495,6 +505,18 @@ public class GameController : MonoBehaviour
         waveNumberText.text = currentWave.ToString() + "/" + waves.Length.ToString();
         enemyTiles.transform.localPosition = new Vector2(enemyTilesX, enemyTiles.transform.localPosition.y);
         clockText.text = waveWait.ToString();
+
+        for (int i = 0; i < waves.Length; i++)
+        {
+            if (i > enabledIconsNumber)
+            {
+                enemyIcons[i].SetActive(false);
+            }
+            else
+            {
+                enemyIcons[i].SetActive(true);
+            }  
+        }
 
         GameObject[] towers = GameObject.FindGameObjectsWithTag("Tower");
         foreach (GameObject i in towers)

@@ -6,6 +6,7 @@ using UnityEngine;
 public class LockOnTarget : MonoBehaviour
 {
     public float turnSpeed;
+    public GameObject gun;
     public float updateTime = 0.02f;
     public Transform currentTarget;
     public float accuracy = 7f; // Точность наведения (0 = абсолютная)
@@ -24,7 +25,7 @@ public class LockOnTarget : MonoBehaviour
     {
         targetDetected = false;
         targetLocked = false;
-        defoultRotation = transform.rotation;
+        defoultRotation = gun.transform.rotation;
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -79,13 +80,13 @@ public class LockOnTarget : MonoBehaviour
             {
                 if (thisCollider.IsTouching(enemyCollider))
                 {
-                    direction = enemy.position - transform.position;
+                    direction = enemy.position - gun.transform.position;
                     float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                     rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = Quaternion.Lerp(transform.rotation, rotation, turnSpeed * updateTime);
+                    gun.transform.rotation = Quaternion.Lerp(gun.transform.rotation, rotation, turnSpeed * updateTime);
 
                     // Если угол поворота башни по направлении к цели меньше accuracy, считаем цель захваченной 
-                    if ((rotation.eulerAngles.z - transform.rotation.eulerAngles.z) < accuracy)
+                    if ((rotation.eulerAngles.z - gun.transform.rotation.eulerAngles.z) < accuracy)
                     {
                         targetLocked = true;
                     }
@@ -127,10 +128,10 @@ public class LockOnTarget : MonoBehaviour
 
     void BackDefoultRotation()
     {
-        transform.rotation = Quaternion.Lerp(transform.rotation, defoultRotation, turnSpeed * updateTime);
-        if (Math.Round(transform.rotation.z, 2) == 0f)
+        gun.transform.rotation = Quaternion.Lerp(gun.transform.rotation, defoultRotation, turnSpeed * updateTime);
+        if (Math.Round(gun.transform.rotation.z, 2) == 0f)
         {
-            transform.rotation = defoultRotation;
+            gun.transform.rotation = defoultRotation;
             CancelInvoke("BackDefoultRotation");
         }
     }
