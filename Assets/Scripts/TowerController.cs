@@ -53,6 +53,8 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
     private Coroutine fireCor, fireEarthquakeCor; // Корутины для выстрелов
     public float buff; // модификатор характеристик (процент/100)
 
+    private const string ACH_TOP_LEVEL = "CgkIsYanlt4XEAIQCg";
+
     public bool shot; // для теста
 
     void Awake()
@@ -309,9 +311,15 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         Boost(); // Увеличиваем боевые параметры с учетом бафа
         // В массиве chevrones на 1 меньше членов, т.к. нулевое звание не отображается
         chevron.sprite = level != 0 ? chevrons[level - 1] : null;
+
         if (active)
         {
             UpdateUpgradeMenu();
+        }
+
+        if (level == maxLevel)
+        {
+            gameController.UnlockAchievement(ACH_TOP_LEVEL);
         }
     }
 

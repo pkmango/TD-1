@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Collections;
 
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
+using UnityEngine.SocialPlatforms;
+
 public class GameController : MonoBehaviour
 {
     public Wave[] waves; // Массив с волнами врагов
+    public TowerController[] typesOfTowers;
     //public float startWait; // Стартовое ожидание
     public float spawnWait; // Пауза между спауном врагов
     public float waveWait; // Пауза между волнами
@@ -50,6 +55,7 @@ public class GameController : MonoBehaviour
     public Text winScoreText;
     public Text livesBonusScoreText;
     public Text difficultyBunusScoreText;
+    public Text difficultyText;
 
     public float armor; // Процент поглащаемого урона
     public float easy, normal, hard; // Настройки сложности для armor
@@ -101,6 +107,7 @@ public class GameController : MonoBehaviour
     private List<GameObject> markers = new List<GameObject>();
     private TilemapController ground; // Земля
     public int currentWave = 0;
+
     // Корутины, котороми нужно управлять
     private Coroutine spawnWaveCor, tilesMoveCor, checkWinningCor;
     public Coroutine spawnPassangersCor;
@@ -113,6 +120,20 @@ public class GameController : MonoBehaviour
 
     private GameObject[] enemyIcons; // Иконки врагов
     private int enabledIconsNumber = 3; // Количество отображаемых иконок врагов
+
+    private const string LEAD_HIGH_SCORES = "CgkIsYanlt4XEAIQAQ";
+    private const string ACH_1000 = "CgkIsYanlt4XEAIQAg";
+    private const string ACH_2500 = "CgkIsYanlt4XEAIQAw";
+    private const string ACH_5000 = "CgkIsYanlt4XEAIQBA";
+    private const string ACH_10000 = "CgkIsYanlt4XEAIQCQ";
+    private const string ACH_TOP_FOR_ALL = "CgkIsYanlt4XEAIQCw";
+    private const int ACH_TOP_FOR_ALL_STEPS = 1000; // Количество шагов для ачивки
+    private const string ACH_EASY_WALK = "CgkIsYanlt4XEAIQBQ";
+    private const string ACH_THE_CHAMPIONS_LEAP = "CgkIsYanlt4XEAIQBg";
+    private const string ACH_HARD_WORK = "CgkIsYanlt4XEAIQBw";
+    private const string ACH_FLAWLESS_VICTORY = "CgkIsYanlt4XEAIQCA";
+    // Соибираем все ачивки прогресс которых связан с накоплением очков в один массив
+    private string[] pointAchievements = { ACH_1000, ACH_2500, ACH_5000, ACH_10000 };
 
     void Awake()
     {
@@ -130,7 +151,20 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        // Для активации Google Play Services
+        PlayGamesPlatform.Activate();
+        PlayGamesPlatform.DebugLogEnabled = true;
+        Social.localUser.Authenticate((bool success) =>
+        {
+            if (success)
+                Debug.Log("Authenticate удачно");
+            else
+                Debug.Log("Authenticate неудачно");
+        });
+
         armor = normal;
+        difficultyText.text = "normal";
+        scoreText.text = score.ToString();
         moneyText.text = currentMoney.ToString();
         livesText.text = startLives.ToString();
         currentLives = startLives;
@@ -547,16 +581,19 @@ public class GameController : MonoBehaviour
     {
         Time.timeScale = 0f;
         gameOverMenu.SetActive(true);
+        ReportScore(score);
         gameOverScoreText.text = score.ToString();
     }
 
     public void Win()
     {
         Time.timeScale = 0f;
+        UnlockingWinAchievements();
         winMenu.SetActive(true);
         difficultyBunusScoreText.text = (difficultyReward * difficultyLevel).ToString();
         livesBonusScoreText.text = (currentLives * 20).ToString();
         score += difficultyReward * difficultyLevel + currentLives * 20;
+        ReportScore(score);
         winScoreText.text = score.ToString();
     }
 
@@ -564,6 +601,8 @@ public class GameController : MonoBehaviour
     {
         if (toggle.isOn)
         {
+            difficultyText.text = toggle.name;
+
             switch (toggle.name)
             {
                 case "easy":
@@ -617,8 +656,121 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void ClickHighScore()
+    {
+        //Social.ShowLeaderboardUI();
+        PlayGamesPlatform.Instance.ShowLeaderboardUI(LEAD_HIGH_SCORES);
+        Debug.Log("Click High Score Btn");
+    }
+
+    public void ClickAchievements()
+    {
+        Social.ShowAchievementsUI();
+        Debug.Log("Click Achievements Btn");
+    }
+
+    private void ReportScore(int finalScore)
+    {
+        Social.ReportScore(finalScore, LEAD_HIGH_SCORES, (bool success) =>
+        {
+            if (success)
+                Debug.Log("Результат удачно добавлен в таблицу лидеров");
+        });
+
+        foreach (string i in pointAchievements)
+        {
+            Debug.Log("Отправляем прогресс для " + i);
+
+            PlayGamesPlatform.Instance.IncrementAchievement(i, finalScore, (bool success) =>
+            {
+                if (success)
+                    Debug.Log("Прогресс " + i + " обновлен");
+            });
+        }
+    }
+
+    private void UnlockingWinAchievements()
+    {
+        switch (difficultyLevel)
+        {
+            case 0:
+                UnlockAchievement(ACH_EASY_WALK);
+
+                //Social.ReportProgress(ACH_EASY_WALK, 100.0f, (bool success) => {
+                //    if (success)
+                //        Debug.Log("Открыто достижение ACH_EASY_WALK");
+                //});
+                break;
+            case 1:
+                UnlockAchievement(ACH_THE_CHAMPIONS_LEAP);
+
+                //Social.ReportProgress(ACH_THE_CHAMPIONS_LEAP, 100.0f, (bool success) => {
+                //    if (success)
+                //        Debug.Log("Открыто достижение ACH_THE_CHAMPIONS_LEAP");
+                //});
+                break;
+            case 2:
+                UnlockAchievement(ACH_HARD_WORK);
+
+                //Social.ReportProgress(ACH_HARD_WORK, 100.0f, (bool success) => {
+                //    if (success)
+                //        Debug.Log("Открыто достижение ACH_HARD_WORK");
+                //});
+                break;
+        }
+
+        if (currentLives == startLives)
+        {
+            UnlockAchievement(ACH_FLAWLESS_VICTORY);
+
+            //Social.ReportProgress(ACH_FLAWLESS_VICTORY, 100.0f, (bool success) => {
+            //    if (success)
+            //        Debug.Log("Открыто достижение ACH_FLAWLESS_VICTORY");
+            //});
+        }
+    }
+
+    private void CheckAllTopAchievement(TowerController tower)
+    {
+        if (PlayerPrefs.GetInt(tower.name, 0) == 0)
+        {
+            PlayerPrefs.SetInt(tower.name, 1);
+            Debug.Log(tower.name + "получила топ уровень первый раз!");
+
+            PlayGamesPlatform.Instance.IncrementAchievement(ACH_TOP_FOR_ALL, ACH_TOP_FOR_ALL_STEPS / typesOfTowers.Length + 1, (bool success) =>
+            {
+                if (success)
+                    Debug.Log("Прогресс ACH_TOP_FOR_ALL обновлен");
+            });
+        }
+
+        // Для исключения ошибок с начислением прогресса в случае добалвения в игру новых башен делаем общую проверку
+        for (int i = 0; i < typesOfTowers.Length; i++)
+        {
+            if (PlayerPrefs.GetInt(typesOfTowers[i].name, 0) == 0)
+            {
+                break;
+            }
+
+            PlayGamesPlatform.Instance.IncrementAchievement(ACH_TOP_FOR_ALL, ACH_TOP_FOR_ALL_STEPS, (bool success) =>
+            {
+                if (success)
+                    Debug.Log("Прогресс ACH_TOP_FOR_ALL обновлен максимально");
+            });
+        }
+    }
+
+    public void UnlockAchievement(string achievement)
+    {
+        Social.ReportProgress(achievement, 100.0f, (bool success) => {
+            if (success)
+                Debug.Log("Открыто достижение " + achievement);
+        });
+    }
+
     public void QuitGame ()
     {
+        PlayGamesPlatform.Instance.SignOut();
         Application.Quit();
     }
 }
