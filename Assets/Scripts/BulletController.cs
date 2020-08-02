@@ -8,6 +8,7 @@ public class BulletController : MonoBehaviour
     public bool rocket; // Это ракета?
     public float splash = 1.5f; // Слеш-радиус для ракеты
     public bool frost; // Пуля морозит?
+    public bool antiAir; // Урон по воздуху?
     //public float slowdown = 30f; // Процент замедления от заморозки
     [HideInInspector]
     public int damage; // Урон назначается пушкой при выстреле
@@ -65,7 +66,18 @@ public class BulletController : MonoBehaviour
                 Collider2D[] splashedEnemies = Physics2D.OverlapCircleAll(transform.position, splash, LayerMask.GetMask("Enemy"));
                 foreach (Collider2D i in splashedEnemies)
                 {
-                    i.GetComponent<EnemyController>().Health(damage);
+                    EnemyController enemy = i.GetComponent<EnemyController>();
+
+                    if (antiAir)
+                    {
+                        if (enemy.air)
+                            enemy.Health(damage);
+                    }
+                    else
+                    {
+                        if (!i.GetComponent<EnemyController>().air)
+                            enemy.Health(damage);
+                    }
                 }
 
                 var ps = GetComponentInChildren<ParticleSystem>();

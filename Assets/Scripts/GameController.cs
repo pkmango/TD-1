@@ -695,47 +695,27 @@ public class GameController : MonoBehaviour
         {
             case 0:
                 UnlockAchievement(ACH_EASY_WALK);
-
-                //Social.ReportProgress(ACH_EASY_WALK, 100.0f, (bool success) => {
-                //    if (success)
-                //        Debug.Log("Открыто достижение ACH_EASY_WALK");
-                //});
                 break;
             case 1:
                 UnlockAchievement(ACH_THE_CHAMPIONS_LEAP);
-
-                //Social.ReportProgress(ACH_THE_CHAMPIONS_LEAP, 100.0f, (bool success) => {
-                //    if (success)
-                //        Debug.Log("Открыто достижение ACH_THE_CHAMPIONS_LEAP");
-                //});
                 break;
             case 2:
                 UnlockAchievement(ACH_HARD_WORK);
-
-                //Social.ReportProgress(ACH_HARD_WORK, 100.0f, (bool success) => {
-                //    if (success)
-                //        Debug.Log("Открыто достижение ACH_HARD_WORK");
-                //});
                 break;
         }
 
         if (currentLives == startLives)
         {
             UnlockAchievement(ACH_FLAWLESS_VICTORY);
-
-            //Social.ReportProgress(ACH_FLAWLESS_VICTORY, 100.0f, (bool success) => {
-            //    if (success)
-            //        Debug.Log("Открыто достижение ACH_FLAWLESS_VICTORY");
-            //});
         }
     }
 
-    private void CheckAllTopAchievement(TowerController tower)
+    public void CheckAllTopAchievement(TowerController tower)
     {
-        if (PlayerPrefs.GetInt(tower.name, 0) == 0)
+        if (PlayerPrefs.GetInt(tower.towerName, 0) == 0)
         {
-            PlayerPrefs.SetInt(tower.name, 1);
-            Debug.Log(tower.name + "получила топ уровень первый раз!");
+            PlayerPrefs.SetInt(tower.towerName, 1);
+            Debug.Log(tower.towerName + " получила топ уровень первый раз!");
 
             PlayGamesPlatform.Instance.IncrementAchievement(ACH_TOP_FOR_ALL, ACH_TOP_FOR_ALL_STEPS / typesOfTowers.Length + 1, (bool success) =>
             {
@@ -745,18 +725,20 @@ public class GameController : MonoBehaviour
         }
 
         // Для исключения ошибок с начислением прогресса в случае добалвения в игру новых башен делаем общую проверку
+        int topSum = 0;
         for (int i = 0; i < typesOfTowers.Length; i++)
         {
-            if (PlayerPrefs.GetInt(typesOfTowers[i].name, 0) == 0)
-            {
-                break;
-            }
+            topSum += PlayerPrefs.GetInt(typesOfTowers[i].towerName, 0);
+        }
 
+        if (topSum == typesOfTowers.Length)
+        {
             PlayGamesPlatform.Instance.IncrementAchievement(ACH_TOP_FOR_ALL, ACH_TOP_FOR_ALL_STEPS, (bool success) =>
             {
                 if (success)
                     Debug.Log("Прогресс ACH_TOP_FOR_ALL обновлен максимально");
             });
+            Debug.Log("Все башни достигали топ-уровня");
         }
     }
 

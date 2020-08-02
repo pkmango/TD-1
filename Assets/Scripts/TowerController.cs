@@ -320,6 +320,8 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
         if (level == maxLevel)
         {
             gameController.UnlockAchievement(ACH_TOP_LEVEL);
+            Debug.Log("Башня " + towerName + " получила top уровень");
+            gameController.CheckAllTopAchievement(this);
         }
     }
 
@@ -476,11 +478,11 @@ public class TowerController : MonoBehaviour, IPointerClickHandler, IPointerDown
 
     private void OnDisable()
     {
-        Debug.Log(gameObject.name + " отключена");
+        //Debug.Log(gameObject.name + " отключена");
     }
 
     private void OnEnable()
     {
-        Debug.Log(gameObject.name + " включена");
+        //Debug.Log(gameObject.name + " включена");
     }
 }
