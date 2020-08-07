@@ -115,15 +115,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 1.2
-  hp: 500
+  hp: 36
   passengers: {fileID: 5090564738376178763, guid: e9beb9e2eb646534d93d4445e8569c37,
     type: 3}
   passenger: 0
   air: 0
-  reward: 0
+  reward: 2
   healthBar: {fileID: 0}
   barLenght: 14
-  barPositionY: 0.4
+  barPositionY: 0.41
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 6165232762365221497}
@@ -131,6 +131,7 @@ MonoBehaviour:
   bashEffect: {fileID: 6192561966549652110}
   bashSpeed: 0.1
   debuffTime: 2
+  currentHp: 0
   deviationVector: {x: 0, y: 0}
 --- !u!58 &249236805244133267
 CircleCollider2D:

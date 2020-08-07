@@ -115,7 +115,7 @@ public class GameController : MonoBehaviour
 
     private float enemyTilesX; // Начальная позиция enemyTiles по оси х
     private float waveStartTime; // Время когда стартовала текущая волна
-    private float delayNext = 0.5f; // Задержка после нажатия Next
+    private float delayNext = 1f; // Задержка после нажатия Next
     private int difficultyLevel = 1; // Уровень сложности 0:easy, 1:normal, 2:hard
 
     private GameObject[] enemyIcons; // Иконки врагов
@@ -295,7 +295,7 @@ public class GameController : MonoBehaviour
 
             int nextReward = nextBtnReward + currentWave / 10; // Добавляем бонус за Next, за каждые 10 волн +1
             ChangeMoney(nextReward); // Награда за Next
-            ChangeScore(currentWave); 
+            if (currentWave < waves.Length) ChangeScore(currentWave);
             // Визуализация награды за нажатие Next
             Vector2 rewardPos = Camera.main.ScreenToWorldPoint(startButton.transform.position);
             rewardPos += new Vector2(-1f, 1f); // Смещаем на единицу

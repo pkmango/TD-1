@@ -4865,7 +4865,7 @@ Transform:
   m_GameObject: {fileID: 7553748591484856119}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
+  m_LocalScale: {x: 0.88, y: 0.88, z: 0.88}
   m_Children:
   - {fileID: 7323416225292480468}
   - {fileID: 3987374530849642495}
@@ -4986,6 +4986,7 @@ MonoBehaviour:
   bashEffect: {fileID: 728622088891684405}
   bashSpeed: 0.1
   debuffTime: 2
+  currentHp: 0
   deviationVector: {x: 0, y: 0}
 --- !u!58 &5464281857460630354
 CircleCollider2D:

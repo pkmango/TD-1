@@ -122,7 +122,7 @@ MonoBehaviour:
   reward: 1
   healthBar: {fileID: 0}
   barLenght: 15
-  barPositionY: 0.4
+  barPositionY: 0.41
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 7627501664667880297}
@@ -130,6 +130,7 @@ MonoBehaviour:
   bashEffect: {fileID: 7612627766702408606}
   bashSpeed: 0.1
   debuffTime: 2
+  currentHp: 0
   deviationVector: {x: 0, y: 0}
 --- !u!58 &4548755880880656003
 CircleCollider2D:

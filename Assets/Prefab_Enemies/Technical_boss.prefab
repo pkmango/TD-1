@@ -4937,8 +4937,6 @@ MonoBehaviour:
   SolidLayer:
     serializedVersion: 2
     m_Bits: 256
-  bordersX: {x: -4, y: 4}
-  bordersY: {x: -4, y: 14}
 --- !u!114 &4916498373476260412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4959,7 +4957,7 @@ MonoBehaviour:
   reward: 0
   healthBar: {fileID: 0}
   barLenght: 14
-  barPositionY: 0.42
+  barPositionY: 0.45
   explosion_vfx: {fileID: 7557699433247402547, guid: 0bce6dc1ff451d64f9ead70388737663,
     type: 3}
   freezeEffect: {fileID: 1351308849934507991}
@@ -4967,6 +4965,7 @@ MonoBehaviour:
   bashEffect: {fileID: 1351072164007663392}
   bashSpeed: 0.1
   debuffTime: 2
+  currentHp: 0
   deviationVector: {x: 0, y: 0}
 --- !u!58 &4916498373476260413
 CircleCollider2D:

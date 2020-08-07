@@ -976,7 +976,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a09b30e56fba11b449673ddee55f5913, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnSpeed: 4
+  turnSpeed: 4.5
   gun: {fileID: 8660418271663339780}
   updateTime: 0.02
   currentTarget: {fileID: 0}
