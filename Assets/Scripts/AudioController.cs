@@ -34,6 +34,8 @@ public class AudioController : MonoBehaviour
 
     public void PlaySound(AudioSource sound)
     {
+        if (sound == null || sound.clip == null) return;
+
         int soundsCount = 0;
 
         foreach(AudioSource i in soundsList)
@@ -43,13 +45,15 @@ public class AudioController : MonoBehaviour
                 soundsCount++;
             }
         }
-        if(soundsCount <= maxShotSounds)
+
+        if(soundsCount < maxShotSounds)
         {
             soundsList.Add(sound);
             sound.Play();
             StartCoroutine(FinishPlaySound(sound));
         }
-        
+
+        // TODO: Рассмотреть использование словаря (Dictionary) вместо List
     }
 
     IEnumerator FinishPlaySound(AudioSource sound)
